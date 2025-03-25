@@ -1,0 +1,115 @@
+============================================
+HƯỚNG DẪN PHÁT TRIỂN DỰ ÁN QLyChiTieu (Android Java)
+============================================
+
+1. CẤU TRÚC DỰ ÁN
+------------------
+app/
+├── src/
+│   ├── main/
+│   │   ├── java/com/nhom08/qlychitieu/
+│   │   │   ├── mo_hinh/       # Mô hình dữ liệu (Entity)
+│   │   │   │   ├── NguoiDung.java
+│   │   │   │   ├── DanhMuc.java
+│   │   │   │   ├── GiaoDich.java
+│   │   │   │   └── NganSach.java
+│   │   │   ├── truy_van/      # Truy vấn CSDL (DAO)
+│   │   │   │   ├── NguoiDungDao.java
+│   │   │   │   ├── DanhMucDao.java
+│   │   │   │   ├── GiaoDichDao.java
+│   │   │   │   └── NganSachDao.java
+│   │   │   ├── csdl/          # CSDL
+│   │   │   │   └── CoSoDuLieu.java
+│   │   │   ├── giao_dien/     # Giao diện (Activity/Fragment)
+│   │   │   │   ├── man_hinh_chinh/
+│   │   │   │   │   └── ManHinhChinhActivity.java
+│   │   │   │   ├── dang_nhap/
+│   │   │   │   │   ├── DangNhapActivity.java
+│   │   │   │   │   └── DangKyActivity.java
+│   │   │   │   ├── giao_dich/
+│   │   │   │   │   └── QuanLyGiaoDichActivity.java
+│   │   │   │   ├── ngan_sach/
+│   │   │   │   │   └── QuanLyNganSachActivity.java
+│   │   │   │   └── bao_cao/
+│   │   │   │       └── BaoCaoActivity.java
+│   │   │   └── tien_ich/      # Tiện ích
+│   │   │       └── TienIchNgayThang.java
+│   │   └── res/               # Tài nguyên
+│   │       ├── layout/        # Giao diện
+│   │       │   ├── man_hinh_chinh.xml
+│   │       │   ├── dang_nhap_man_hinh.xml
+│   │       │   ├── dang_ky_man_hinh.xml
+│   │       │   ├── giao_dich_man_hinh.xml
+│   │       │   ├── giao_dich_item.xml
+│   │       │   ├── giao_dich_dialog_them.xml
+│   │       │   ├── ngan_sach_man_hinh.xml
+│   │       │   ├── ngan_sach_dialog_them.xml
+│   │       │   ├── bao_cao_man_hinh.xml
+│   │       │   └── bao_cao_dialog_xuat_bao_cao.xml
+│   │       ├── values/
+│   │       │   ├── strings.xml
+│   │       │   └── colors.xml
+│   │       └── drawable/
+│   ├── androidTest/            # UI Test
+│   └── test/                  # Unit Test
+
+2. CÁCH LẤY DỰ ÁN TỪ GITHUB VỀ MÁY CÁ NHÂN
+-----------------------------------------
+Để bắt đầu làm việc, mỗi thành viên cần lấy dự án từ GitHub về máy cá nhân. Thực hiện theo các bước sau:
+
+1. **Cài đặt Git**:
+   - Tải và cài đặt Git từ: https://git-scm.com/downloads
+   - Kiểm tra cài đặt: Chạy lệnh `git --version` trong terminal/command prompt.
+
+2. **Tạo thư mục làm việc**:
+   - Tạo một thư mục trên máy để chứa dự án, ví dụ: `D:\AndroidProjects\QLyChiTieu`.
+   - Mở terminal/command prompt và di chuyển vào thư mục: cd D:\AndroidProjects\QLyChiTieu
+
+3. **Clone repository**:
+- Lấy link repository từ nhóm trưởng: https://github.com/ThanhNB-NBT/QLyChiTieu.git).
+- Chạy lệnh: git clone https://github.com/ThanhNB-NBT/QLyChiTieu.git
+- Sau khi clone, bạn sẽ thấy thư mục `QLyChiTieu` chứa toàn bộ mã nguồn.
+
+4. **Mở dự án trong Android Studio**:
+- Mở Android Studio.
+- Chọn **File > Open**, tìm đến thư mục `QLyChiTieu` vừa clone, và mở.
+- Chờ Android Studio sync dự án với Gradle.
+
+5. **Kiểm tra và chạy thử**:
+- Kết nối thiết bị Android hoặc mở emulator.
+- Nhấn **Run** (nút tam giác xanh) để chạy ứng dụng.
+- Nếu có lỗi Gradle, kiểm tra file `build.gradle`
+
+3. QUY TRÌNH LÀM VIỆC VỚI GIT
+------------------------------
+1. Luôn pull trước khi làm việc:
+   git checkout main
+   git pull origin main
+
+2. Tạo branch mới cho tính năng:
+   git checkout -b feature/login
+
+3. Commit thường xuyên:
+   git commit -m "FEAT: Thêm chức năng đăng nhập"
+
+4. Quy ước message commit:
+   - FEAT: Tính năng mới
+   - FIX: Sửa lỗi
+   - REFACTOR: Cải tiến code
+
+5. **Push và tạo Pull Request (PR)**:
+- Push nhánh của bạn lên GitHub: git push origin feature/dang-nhap
+
+4. QUY TẮC CODE
+---------------
+- **Đặt tên class**:
++ Activity: DangNhapActivity, QuanLyGiaoDichActivity
++ DAO: NguoiDungDao, GiaoDichDao
++ Entity: NguoiDung, GiaoDich
+- **Đặt tên biến**:
++ camelCase: tenDangNhap, danhSachGiaoDich
++ Hằng số: UPPER_CASE: SO_LUONG_GIAO_DICH_TOI_DA
+- **Đặt tên file layout**:
++ Dùng tiền tố theo chức năng: dang_nhap_man_hinh.xml, giao_dich_item.xml
+- **Code style**:
++ Dùng định dạng tự động trong Android Studio (Ctrl+Alt+L).
