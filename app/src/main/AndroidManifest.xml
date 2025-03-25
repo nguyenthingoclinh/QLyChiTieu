@@ -13,7 +13,13 @@
         android:theme="@style/Theme.QLyChiTieu"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".giao_dien.dang_nhap.DangKyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".giao_dien.dang_nhap.DangNhapActivity"
+            android:exported="false" />
+        <activity
+            android:name=".giao_dien.man_hinh_chinh.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
