@@ -13,6 +13,15 @@
         android:theme="@style/Theme.QLyChiTieu"
         tools:targetApi="31">
         <activity
+            android:name=".giao_dien.bao_cao.BaoCaoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".giao_dien.bieu_do.BieuDoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".giao_dien.ca_nhan.CaNhanActivity"
+            android:exported="false" />
+        <activity
             android:name=".giao_dien.dang_nhap.DangKyActivity"
             android:exported="false" />
         <activity
