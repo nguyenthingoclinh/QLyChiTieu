@@ -10,11 +10,11 @@ public class BankAccount {
     private int bankAccountID;
     private int userID;
     private String name;
-    private double balance;
+    private double balance; //Số dư
     private String icon;
     private String type;
     private String description;
-    private String currency;
+    private String currency; // Loại tiền
 
     public BankAccount(int userID, String name, double balance, String icon, String type, String description, String currency) {
         this.userID = userID;
@@ -23,6 +23,14 @@ public class BankAccount {
         this.icon = icon;
         this.type = type;
         this.description = description;
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
