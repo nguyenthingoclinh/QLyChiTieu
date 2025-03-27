@@ -20,18 +20,18 @@ public interface TransactionDAO {
     @Delete
     void deleteTransaction(Transaction transaction);
 
-    @Query("SELECT * FROM transactions WHERE userID = :userID ORDER BY date DESC LIMIT 5")
-    List<Transaction> getRecentTransactions(int userID);
+    @Query("SELECT * FROM transactions WHERE userId = :userId ORDER BY date DESC LIMIT 5")
+    List<Transaction> getRecentTransactions(int userId);
 
-    @Query("SELECT * FROM transactions WHERE userID = :userID AND date BETWEEN :startDate AND :endDate")
-    List<Transaction> getTransactionsByDate(int userID, long startDate, long endDate);
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND date BETWEEN :startDate AND :endDate")
+    List<Transaction> getTransactionsByDate(int userId, long startDate, long endDate);
 
-    @Query("SELECT * FROM transactions WHERE userID = :userID AND description LIKE '%' || :keyword || '%'")
-    List<Transaction> searchTransactions(int userID, String keyword);
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND description LIKE '%' || :keyword || '%'")
+    List<Transaction> searchTransactions(int userId, String keyword);
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE userID = :userID AND amount > 0 AND date BETWEEN :startDate AND :endDate")
-    double getTotalIncome(int userID, long startDate, long endDate);
+    @Query("SELECT SUM(amount) FROM transactions WHERE userId = :userId AND amount > 0 AND date BETWEEN :startDate AND :endDate")
+    double getTotalIncome(int userId, long startDate, long endDate);
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE userID = :userID AND amount < 0 AND date BETWEEN :startDate AND :endDate")
-    double getTotalExpense(int userID, long startDate, long endDate);
+    @Query("SELECT SUM(amount) FROM transactions WHERE userId = :userId AND amount < 0 AND date BETWEEN :startDate AND :endDate")
+    double getTotalExpense(int userId, long startDate, long endDate);
 }

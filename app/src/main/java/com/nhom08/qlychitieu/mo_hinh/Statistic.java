@@ -1,46 +1,60 @@
 package com.nhom08.qlychitieu.mo_hinh;
+
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 @Entity(tableName = "statistics",
         foreignKeys = {
-                @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "userID", onDelete = ForeignKey.CASCADE),
-                @ForeignKey(entity = Category.class, parentColumns = "categoryID", childColumns = "categoryID"),
+                @ForeignKey(entity = User.class, parentColumns = "userId", childColumns = "userId", onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = Category.class, parentColumns = "categoryId", childColumns = "categoryId")
+        },
+        indices = {
+                @Index(value = "userId"),
+                @Index(value = "categoryId")
         })
 public class Statistic {
     @PrimaryKey(autoGenerate = true)
-    private int statisticID;
-    private int userID;
-    private int categoryID;
+    private int statisticId;
+    private int userId;
+    private int categoryId;
     private double totalIncome;
     private double totalExpense;
-    private long month;
-    private long year;
+    private int month;
+    private int year;
 
-    public Statistic(int userID, int categoryID, double totalIncome, double totalExpense, long month, long year) {
-        this.userID = userID;
-        this.categoryID = categoryID;
+    public Statistic(int userId, int categoryId, double totalIncome, double totalExpense, int month, int year) {
+        this.userId = userId;
+        this.categoryId = categoryId;
         this.totalIncome = totalIncome;
         this.totalExpense = totalExpense;
         this.month = month;
         this.year = year;
     }
 
-    public int getStatisticID() {
-        return statisticID;
+    public int getStatisticId() {
+        return statisticId;
     }
 
-    public void setStatisticID(int statisticID) {
-        this.statisticID = statisticID;
+    public void setStatisticId(int statisticId) {
+        this.statisticId = statisticId;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public double getTotalIncome() {
@@ -51,22 +65,6 @@ public class Statistic {
         this.totalIncome = totalIncome;
     }
 
-    public long getMonth() {
-        return month;
-    }
-
-    public void setMonth(long month) {
-        this.month = month;
-    }
-
-    public long getYear() {
-        return year;
-    }
-
-    public void setYear(long year) {
-        this.year = year;
-    }
-
     public double getTotalExpense() {
         return totalExpense;
     }
@@ -75,11 +73,19 @@ public class Statistic {
         this.totalExpense = totalExpense;
     }
 
-    public int getCategoryID() {
-        return categoryID;
+    public int getMonth() {
+        return month;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }
