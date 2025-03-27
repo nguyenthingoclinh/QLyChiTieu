@@ -17,6 +17,6 @@ public interface SettingDAO {
     @Delete
     void deleteSetting(Setting setting);
 
-    @Query("SELECT * FROM settings WHERE userID = :userID LIMIT 1")
-    Setting getSettingByUserID(int userID);
+    @Query("SELECT * FROM settings WHERE userId = :userId LIMIT 1")
+    Setting getSettingByUserId(int userId);
 }

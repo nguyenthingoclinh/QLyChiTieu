@@ -16,9 +16,9 @@ public interface CategoryDAO {
     void updateCategory(Category category);
     @Delete
     void deleteCategory(Category category);
-    @Query("SELECT * FROM categories WHERE userID = :userID")
-    List<Category> getAllCategories(int userID);
+    @Query("SELECT * FROM categories WHERE userId = :userId")
+    List<Category> getAllCategories(int userId);
 
-    @Query("SELECT * FROM categories WHERE userID = :userID AND type = :type")
-    List<Category> getCategoriesByType(int userID, String type);
+    @Query("SELECT * FROM categories WHERE userId = :userId AND type = :type")
+    List<Category> getCategoriesByType(int userId, String type);
 }

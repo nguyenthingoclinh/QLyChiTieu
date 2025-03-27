@@ -1,65 +1,72 @@
 package com.nhom08.qlychitieu.mo_hinh;
+
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 @Entity(tableName = "transactions",
         foreignKeys = {
-            @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "userID", onDelete = ForeignKey.CASCADE),
-            @ForeignKey(entity = Category.class, parentColumns = "categoryID", childColumns = "categoryID"),
-            @ForeignKey(entity = BankAccount.class, parentColumns = "bankAccountID", childColumns = "bankAccountID")
+                @ForeignKey(entity = User.class, parentColumns = "userId", childColumns = "userId", onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = Category.class, parentColumns = "categoryId", childColumns = "categoryId"),
+                @ForeignKey(entity = Account.class, parentColumns = "accountId", childColumns = "accountId")
+        },
+        indices = {
+                @Index(value = "userId"),
+                @Index(value = "categoryId"),
+                @Index(value = "accountId")
         })
 public class Transaction {
         @PrimaryKey(autoGenerate = true)
-        private int transactionID;
-        private int userID;
-        private int categoryID;
-        private int bankAccountID;
-        private double amount; //Số tiền giao dịch
+        private int transactionId;
+        private int userId;
+        private Integer categoryId;
+        private Integer accountId;
+        private double amount; // Số tiền giao dịch
         private long date;
         private String description;
         private String imagePath;
 
-        public Transaction(int userID, int categoryID, int bankAccountID, double amount, long date, String description, String imagePath) {
-                this.userID = userID;
-                this.categoryID = categoryID;
-                this.bankAccountID = bankAccountID;
+        public Transaction(int userId, Integer categoryId, Integer accountId, double amount, long date, String description, String imagePath) {
+                this.userId = userId;
+                this.categoryId = categoryId;
+                this.accountId = accountId;
                 this.amount = amount;
                 this.date = date;
                 this.description = description;
                 this.imagePath = imagePath;
         }
 
-        public int getTransactionID() {
-                return transactionID;
+        public int getTransactionId() {
+                return transactionId;
         }
 
-        public void setTransactionID(int transactionID) {
-                this.transactionID = transactionID;
+        public void setTransactionId(int transactionId) {
+                this.transactionId = transactionId;
         }
 
-        public int getUserID() {
-                return userID;
+        public int getUserId() {
+                return userId;
         }
 
-        public void setUserID(int userID) {
-                this.userID = userID;
+        public void setUserId(int userId) {
+                this.userId = userId;
         }
 
-        public int getCategoryID() {
-                return categoryID;
+        public Integer getCategoryId() {
+                return categoryId;
         }
 
-        public void setCategoryID(int categoryID) {
-                this.categoryID = categoryID;
+        public void setCategoryId(Integer categoryId) {
+                this.categoryId = categoryId;
         }
 
-        public int getBankAccountID() {
-                return bankAccountID;
+        public Integer getAccountId() {
+                return accountId;
         }
 
-        public void setBankAccountID(int bankAccountID) {
-                this.bankAccountID = bankAccountID;
+        public void setAccountId(Integer accountId) {
+                this.accountId = accountId;
         }
 
         public double getAmount() {

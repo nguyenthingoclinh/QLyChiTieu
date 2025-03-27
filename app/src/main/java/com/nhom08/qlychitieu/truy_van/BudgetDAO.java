@@ -17,9 +17,9 @@ public interface BudgetDAO {
     void updateBudget(Budget budget);
     @Delete
     void deleteBudget(Budget budget);
-    @Query("SELECT * FROM budgets WHERE userID = :userID")
-    List<Budget> getBudgets(int userID);
+    @Query("SELECT * FROM budgets WHERE userId = :userId")
+    List<Budget> getBudgets(int userId);
 
-    @Query("SELECT * FROM budgets WHERE userID = :userID AND categoryID = :categoryID")
-    List<Budget> getBudgetByCategory(int userID, int categoryID);
+    @Query("SELECT * FROM budgets WHERE userId = :userId AND categoryId = :categoryId")
+    List<Budget> getBudgetByCategory(int userId, int categoryId);
 }

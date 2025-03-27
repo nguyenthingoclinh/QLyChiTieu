@@ -1,52 +1,58 @@
 package com.nhom08.qlychitieu.mo_hinh;
+
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 @Entity(tableName = "budgets",
-foreignKeys = {
-        @ForeignKey(entity = User.class, parentColumns = "userID", childColumns = "userID", onDelete = ForeignKey.CASCADE),
-        @ForeignKey(entity = Category.class, parentColumns = "categoryID", childColumns = "categoryID")
-})
+        foreignKeys = {
+                @ForeignKey(entity = User.class, parentColumns = "userId", childColumns = "userId", onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = Category.class, parentColumns = "categoryId", childColumns = "categoryId")
+        },
+        indices = {
+                @Index(value = "userId"),
+                @Index(value = "categoryId")
+        })
 public class Budget {
     @PrimaryKey(autoGenerate = true)
-    private int budgetID;
-    private int userID;
-    private int categoryID;
+    private int budgetId;
+    private int userId;
+    private Integer categoryId;
     private double amount;
     private long startDate;
     private long endDate;
 
-    public Budget(int userID, int categoryID, double amount, long startDate, long endDate) {
-        this.userID = userID;
-        this.categoryID = categoryID;
+    public Budget(int userId, Integer categoryId, double amount, long startDate, long endDate) {
+        this.userId = userId;
+        this.categoryId = categoryId;
         this.amount = amount;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public int getBudgetID() {
-        return budgetID;
+    public int getBudgetId() {
+        return budgetId;
     }
 
-    public void setBudgetID(int budgetID) {
-        this.budgetID = budgetID;
+    public void setBudgetId(int budgetId) {
+        this.budgetId = budgetId;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getCategoryID() {
-        return categoryID;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public double getAmount() {

@@ -17,10 +17,10 @@ public interface StatisticDAO {
     void updateStatistic(Statistic statistic);
     @Delete
     void deleteStatistic(Statistic statistic);
-    @Query("SELECT * FROM statistics WHERE userID = :userID AND month = :month AND year = :year")
-    List<Statistic> getStatisticsByMonth(int userID, int month, int year);
+    @Query("SELECT * FROM statistics WHERE userId = :userId AND month = :month AND year = :year")
+    List<Statistic> getStatisticsByMonth(int userId, int month, int year);
 
-    @Query("SELECT * FROM statistics WHERE userID = :userID AND categoryID = :categoryID")
-    List<Statistic> getStatisticsByCategoryAndMonth(int userID, int categoryID);
+    @Query("SELECT * FROM statistics WHERE userId = :userId AND categoryID = :categoryID")
+    List<Statistic> getStatisticsByCategoryAndMonth(int userId, int categoryID);
 
 }

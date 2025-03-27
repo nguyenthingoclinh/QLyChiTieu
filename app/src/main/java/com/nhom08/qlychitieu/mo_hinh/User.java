@@ -1,41 +1,45 @@
 package com.nhom08.qlychitieu.mo_hinh;
+
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "users")
 public class User {
     @PrimaryKey(autoGenerate = true)
-    private int userID;
+    private int userId;
     private String username;
     private String password;
     private String email;
     private String fullName;
-    private String googleID;
+    private String googleId;
     private String resetCode;
     private String avatarPath;
 
-    //Constructor tối thiếu
+    // Constructor tối thiểu
+    @Ignore
     public User(String username, String password, String email, String fullName) {
-        this(username, password, email, fullName,null,null,null);
+        this(username, password, email, fullName, null, null, null);
     }
 
-    //Constructor đầy đủ
-    public User(String username, String password, String email, String fullName, String googleID, String resetCode, String avatarPath) {
+    // Constructor đầy đủ
+    public User(String username, String password, String email, String fullName, String googleId, String resetCode, String avatarPath) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.fullName = fullName;
-        this.googleID = googleID;
+        this.googleId = googleId;
         this.resetCode = resetCode;
         this.avatarPath = avatarPath;
     }
 
-    public int getUserID() {
-        return userID;
+    // Getter và Setter
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -70,12 +74,12 @@ public class User {
         this.fullName = fullName;
     }
 
-    public String getAvatarPath() {
-        return avatarPath;
+    public String getGoogleId() {
+        return googleId;
     }
 
-    public void setAvatarPath(String avatarPath) {
-        this.avatarPath = avatarPath;
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public String getResetCode() {
@@ -86,11 +90,11 @@ public class User {
         this.resetCode = resetCode;
     }
 
-    public String getGoogleID() {
-        return googleID;
+    public String getAvatarPath() {
+        return avatarPath;
     }
 
-    public void setGoogleID(String googleID) {
-        this.googleID = googleID;
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 }
