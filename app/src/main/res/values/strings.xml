@@ -1,3 +1,17 @@
 <resources>
-    <string name="app_name">QLyChiTieu</string>
+    <string name="app_name">Quản lý chi tiêu</string>
+<!-- Đăng nhập -->
+    <string name="login_title">Đăng nhập</string>
+    <string name="username_hint">Email</string>
+    <string name="password_hint">Mật khẩu</string>
+
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="register_button">Đăng ký</string>
+    <string name="google_login_button"> Đăng nhập bằng Google</string>
+<!-- Đăng ký   -->
+    <string name="fullname">Họ và tên</string>
+    <string name="password_confirm">Nhập lại mật khẩu</string>
+    <string name="google_register">Đăng ký bằng Google</string>
+    <string name="login_redirect">Đã có tài khoản? Đăng nhập</string>
 </resources>
