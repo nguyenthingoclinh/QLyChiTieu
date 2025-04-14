@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QLyChiTieu"
+        android:name=".MyApplication"
         tools:targetApi="31">
         <activity
             android:name=".giao_dien.bao_cao.BaoCaoActivity"
@@ -23,15 +24,17 @@
             android:exported="false" />
         <activity
             android:name=".giao_dien.dang_nhap.DangKyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".giao_dien.dang_nhap.DangNhapActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".giao_dien.dang_nhap.DangNhapActivity"
+            android:exported="false">
+
         </activity>
         <activity
             android:name=".giao_dien.man_hinh_chinh.MainActivity"

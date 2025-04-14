@@ -8,26 +8,24 @@ import androidx.room.PrimaryKey;
 public class User {
     @PrimaryKey(autoGenerate = true)
     private int userId;
-    private String username;
-    private String password;
-    private String email;
     private String fullName;
+    private String email;
+    private String password;
     private String googleId;
     private String resetCode;
     private String avatarPath;
 
     // Constructor tối thiểu
     @Ignore
-    public User(String username, String password, String email, String fullName) {
-        this(username, password, email, fullName, null, null, null);
+    public User( String fullName, String email, String password) {
+        this(fullName, email, password, null, null, null);
     }
 
     // Constructor đầy đủ
-    public User(String username, String password, String email, String fullName, String googleId, String resetCode, String avatarPath) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
+    public User(String fullName, String email, String password,  String googleId, String resetCode, String avatarPath) {
         this.fullName = fullName;
+        this.email = email;
+        this.password = password;
         this.googleId = googleId;
         this.resetCode = resetCode;
         this.avatarPath = avatarPath;
@@ -40,14 +38,6 @@ public class User {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
