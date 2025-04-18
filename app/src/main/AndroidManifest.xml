@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,8 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QLyChiTieu"
-        android:name=".MyApplication"
         tools:targetApi="31">
+        <activity
+            android:name=".giao_dien.them_giao_dich.AddActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".giao_dien.bao_cao.BaoCaoActivity"
             android:exported="false" />
@@ -24,9 +28,7 @@
             android:exported="false" />
         <activity
             android:name=".giao_dien.dang_nhap.DangKyActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".giao_dien.dang_nhap.DangNhapActivity"
             android:exported="true">
@@ -38,9 +40,7 @@
         </activity>
         <activity
             android:name=".giao_dien.man_hinh_chinh.MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
     </application>
 
 </manifest>

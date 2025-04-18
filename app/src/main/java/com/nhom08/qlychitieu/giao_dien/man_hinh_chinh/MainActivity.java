@@ -1,5 +1,6 @@
 package com.nhom08.qlychitieu.giao_dien.man_hinh_chinh;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -15,11 +16,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.databinding.ActivityMainBinding;
-import com.nhom08.qlychitieu.fragment.AddFragment;
 import com.nhom08.qlychitieu.fragment.CharFragment;
 import com.nhom08.qlychitieu.fragment.HomeFragment;
 import com.nhom08.qlychitieu.fragment.PersonFragment;
 import com.nhom08.qlychitieu.fragment.ReportFragment;
+import com.nhom08.qlychitieu.giao_dien.them_giao_dich.AddActivity;
 
 import java.util.function.Supplier;
 
@@ -55,16 +56,21 @@ public class MainActivity extends AppCompatActivity {
         fragmentMap.put(R.id.menu_char, CharFragment::new);
         fragmentMap.put(R.id.menu_report, ReportFragment::new);
         fragmentMap.put(R.id.menu_person, PersonFragment::new);
-        fragmentMap.put(R.id.menu_add, AddFragment::new);
 
         // Thiết lập BottomNavigationView
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.menu_add) {
+                startActivity(new Intent(this, AddActivity.class));
+                return false; // không chọn tab này
+            }
+
             Supplier<Fragment> fragmentSupplier = fragmentMap.get(item.getItemId());
             if (fragmentSupplier != null) {
                 replaceFragment(fragmentSupplier.get());
             }
             return true;
         });
+
 
         // Mặc định hiển thị HomeFragment khi khởi động
         replaceF();
