@@ -26,6 +26,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 
     compileOptions {
@@ -51,6 +52,7 @@ dependencies {
     implementation libs.firebase.analytics
     implementation libs.firebase.auth
     implementation libs.bcrypt
+    implementation libs.fragment
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

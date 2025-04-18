@@ -1,17 +1,31 @@
 <resources>
     <string name="app_name">Quản lý chi tiêu</string>
-<!-- Đăng nhập -->
+
+    <!-- Đăng nhập -->
     <string name="login_title">Đăng nhập</string>
     <string name="username_hint">Email</string>
     <string name="password_hint">Mật khẩu</string>
-
     <string name="forgot_password">Quên mật khẩu?</string>
     <string name="login_button">Đăng nhập</string>
     <string name="register_button">Đăng ký</string>
     <string name="google_login_button"> Đăng nhập bằng Google</string>
-<!-- Đăng ký   -->
+
+    <!-- Đăng ký   -->
     <string name="fullname">Họ và tên</string>
     <string name="password_confirm">Nhập lại mật khẩu</string>
     <string name="google_register">Đăng ký bằng Google</string>
     <string name="login_redirect">Đã có tài khoản? Đăng nhập</string>
+
+    <!-- Menu   -->
+    <string name="menu_home">Trang chủ</string>
+    <string name="menu_report">Báo cáo</string>
+    <string name="menu_setting">Cài đặt</string>
+    <string name="menu_char">Biểu đồ</string>
+    <string name="menu_person">Tôi</string>
+    <string name="menu_add">Thêm</string>
+    <string name="add_new">Thêm mới giao dịch</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

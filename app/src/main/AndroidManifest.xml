@@ -25,16 +25,16 @@
         <activity
             android:name=".giao_dien.dang_nhap.DangKyActivity"
             android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".giao_dien.dang_nhap.DangNhapActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".giao_dien.dang_nhap.DangNhapActivity"
-            android:exported="false">
-
         </activity>
         <activity
             android:name=".giao_dien.man_hinh_chinh.MainActivity"

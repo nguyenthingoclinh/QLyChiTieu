@@ -12,6 +12,7 @@ playServicesAuth = "21.3.0"
 googleServices = "4.4.2"
 androidxCredentials = "1.5.0"
 googleid = "1.1.1"
+fragment = "1.8.4"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -33,6 +34,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version = "23.2.0" }
 bcrypt = { group = "org.mindrot", name = "jbcrypt", version = "0.4" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
