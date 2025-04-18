@@ -6,5 +6,6 @@
     <color name="purple_700">#512DAB</color>
     <color name="teal_200">#B2DFDB</color>
     <color name="teal_700">#03DAC5</color>
-
+    <color name="yellow">#FFC400</color>
+    <color name="lavender">#8692F7</color>
 </resources>

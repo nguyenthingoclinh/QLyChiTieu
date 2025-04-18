@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:andorid="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/menu_home"
+        android:title="@string/menu_home"
+        android:icon="@drawable/ic_home"/>
+    <item
+        android:id="@+id/menu_report"
+        android:title="@string/menu_report"
+        android:icon="@drawable/ic_report"/>
+    <item
+        android:id="@+id/menu_add"
+        android:title=""
+        android:icon="@drawable/ic_add"/>
+    <item
+        android:id="@+id/menu_char"
+        android:title="@string/menu_char"
+        android:icon="@drawable/ic_chart"/>
+    <item
+        android:id="@+id/menu_person"
+        android:title="@string/menu_person"
+        android:icon="@drawable/ic_person"/>
+</menu>
