@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".giao_dien.dang_nhap.DangNhapActivity">
+    tools:context=".giao_dien.dang_nhap.LoginActivity">
 
     <!-- Logo -->
     <ImageView
@@ -21,36 +21,92 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <!-- Username -->
-    <EditText
-        android:id="@+id/edtUsername"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/usernameContainer"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="50dp"
-        android:autofillHints="emailAddress"
-        android:drawableStart="@drawable/ic_email"
-        android:drawablePadding="15dp"
-        android:hint="@string/username_hint"
-        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLogo" />
+        app:layout_constraintTop_toBottomOf="@id/imgLogo">
+
+        <TextView
+            android:id="@+id/iconUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/material_icons_outlined"
+            android:text="@string/icon_email"
+            android:textSize="32sp"
+            android:textColor="@android:color/black"
+            android:padding="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <EditText
+            android:id="@+id/edtUsername"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:autofillHints="emailAddress"
+            android:hint="@string/username_hint"
+            android:inputType="textEmailAddress"
+            app:layout_constraintStart_toEndOf="@id/iconUsername"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Password -->
-    <EditText
-        android:id="@+id/edtPassword"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/passwordContainer"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="15dp"
-        android:autofillHints="password"
-        android:drawableStart="@drawable/ic_lock"
-        android:drawablePadding="15dp"
-        android:hint="@string/password_hint"
-        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtUsername" />
+        app:layout_constraintTop_toBottomOf="@id/usernameContainer">
+
+        <TextView
+            android:id="@+id/iconPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/material_icons_outlined"
+            android:text="@string/icon_lock"
+            android:textSize="32sp"
+            android:textColor="@android:color/black"
+            android:padding="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:autofillHints="password"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword"
+            app:layout_constraintStart_toEndOf="@id/iconPassword"
+            app:layout_constraintEnd_toStartOf="@id/iconPasswordVisibility"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/iconPasswordVisibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/material_icons_outlined"
+            android:text="@string/icon_visibility_off"
+            android:textSize="28sp"
+            android:textColor="@android:color/black"
+            android:padding="5dp"
+            android:onClick="togglePasswordVisibility"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Forgot Password -->
     <Button
@@ -66,7 +122,7 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtPassword" />
+        app:layout_constraintTop_toBottomOf="@id/passwordContainer" />
 
     <!-- Login Button -->
     <Button
@@ -77,7 +133,8 @@
         android:layout_marginTop="45dp"
         android:backgroundTint="#1976D2"
         android:text="@string/login_button"
-        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textSize="18sp"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +153,7 @@
         android:text="@string/google_login_button"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:translationY="1dp"
         android:translationZ="1dp"
         app:cornerRadius="8dp"
@@ -120,7 +177,7 @@
         android:text="@string/register_button"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:translationY="1dp"
         android:translationZ="1dp"
         app:cornerRadius="8dp"

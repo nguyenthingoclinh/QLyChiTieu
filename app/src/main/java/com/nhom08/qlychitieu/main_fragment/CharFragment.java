@@ -1,4 +1,4 @@
-package com.nhom08.qlychitieu.fragment;
+package com.nhom08.qlychitieu.main_fragment;
 
 import android.os.Bundle;
 
@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 
 import com.nhom08.qlychitieu.R;
 
-public class ReportFragment extends Fragment {
-    
+public class CharFragment extends Fragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_report, container, false);
+        return inflater.inflate(R.layout.fragment_char, container, false);
     }
 }

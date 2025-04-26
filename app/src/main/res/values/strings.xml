@@ -24,8 +24,19 @@
     <string name="menu_person">Tôi</string>
     <string name="menu_add">Thêm</string>
     <string name="add_new">Thêm mới giao dịch</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Chuỗi cho PersonFragment -->
+    <string name="username">Tên người dùng</string>
+    <string name="user_gmail">admin@gmail.com</string>
+    <string name="profile">Hồ sơ</string>
+    <string name="accountBank">Tài khoản ngân hàng</string>
+    <string name="budget">Ngân sách</string>
+    <string name="export_data">Xuất dữ liệu</string>
+    <string name="categorySetting">Cài đặt danh mục</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="title">Tiêu đề</string>
+    <string name="avatar">Avatar</string>
+    <string name="menu_icon">Menu</string>
+    <string name="arrow_right">Mũi tên</string>
 
 </resources>

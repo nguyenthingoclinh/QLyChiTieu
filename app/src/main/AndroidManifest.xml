@@ -27,20 +27,21 @@
             android:name=".giao_dien.ca_nhan.CaNhanActivity"
             android:exported="false" />
         <activity
-            android:name=".giao_dien.dang_nhap.DangKyActivity"
-            android:exported="true"></activity>
+            android:name=".giao_dien.dang_nhap.SignInActivity"
+            android:exported="false">
+        </activity>
         <activity
-            android:name=".giao_dien.dang_nhap.DangNhapActivity"
+            android:name=".giao_dien.dang_nhap.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".giao_dien.man_hinh_chinh.MainActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+        </activity>
     </application>
 
 </manifest>
