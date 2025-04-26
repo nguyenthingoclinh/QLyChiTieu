@@ -16,10 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.databinding.ActivityMainBinding;
-import com.nhom08.qlychitieu.fragment.CharFragment;
-import com.nhom08.qlychitieu.fragment.HomeFragment;
-import com.nhom08.qlychitieu.fragment.PersonFragment;
-import com.nhom08.qlychitieu.fragment.ReportFragment;
+import com.nhom08.qlychitieu.main_fragment.CharFragment;
+import com.nhom08.qlychitieu.main_fragment.HomeFragment;
+import com.nhom08.qlychitieu.main_fragment.PersonFragment;
+import com.nhom08.qlychitieu.main_fragment.ReportFragment;
 import com.nhom08.qlychitieu.giao_dien.them_giao_dich.AddActivity;
 
 import java.util.function.Supplier;
@@ -71,9 +71,23 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-
         // Mặc định hiển thị HomeFragment khi khởi động
         replaceF();
+
+        // Lắng nghe khi back stack thay đổi để cập nhật bottom nav
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            Fragment current = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+            if (current instanceof HomeFragment) {
+                binding.bottomNavigationView.setSelectedItemId(R.id.menu_home);
+            } else if (current instanceof CharFragment) {
+                binding.bottomNavigationView.setSelectedItemId(R.id.menu_char);
+            } else if (current instanceof ReportFragment) {
+                binding.bottomNavigationView.setSelectedItemId(R.id.menu_report);
+            } else if (current instanceof PersonFragment) {
+                binding.bottomNavigationView.setSelectedItemId(R.id.menu_person);
+            }
+        });
+
     }
 
     private void replaceF() {

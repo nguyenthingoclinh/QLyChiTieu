@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Icons cho các danh mục trong AddActivity -->
+    <string name="icon_shopping_cart">\uE8CC</string> <!-- Mua sắm -->
+    <string name="icon_restaurant">\uE561</string> <!-- Đồ ăn -->
+    <string name="icon_phone">\uE0CD</string> <!-- Điện thoại -->
+    <string name="icon_games">\uE8B8</string> <!-- Giải trí -->
+    <string name="icon_health">\uE87D</string> <!-- Sức khỏe -->
+    <string name="icon_school">\uE80C</string> <!-- Giáo dục -->
+    <string name="icon_sports">\uE52F</string> <!-- Thể thao -->
+    <string name="icon_people">\uE7EF</string> <!-- Xã hội -->
+    <string name="icon_directions_car">\uE530</string> <!-- Vận tải -->
+    <string name="icon_laundry">\uE536</string> <!-- Quần áo -->
+    <string name="icon_car_repair">\uE531</string> <!-- Xe hơi -->
+    <string name="icon_credit_card">\uE870</string> <!-- Thẻ tín dụng -->
+    <string name="icon_card_giftcard">\uE8F4</string> <!-- Rương quà -->
+    <string name="icon_account_balance">\uE85C</string> <!-- Thẻ ngân hàng -->
+    <string name="icon_confirmation_number">\uE8F5</string> <!-- Vé số -->
+    <string name="icon_child_friendly">\uE7EE</string> <!-- Trẻ em -->
+    <string name="icon_local_florist">\uE345</string> <!-- Rau quả -->
+    <string name="icon_local_grocery_store">\uE87C</string> <!-- Hoa quả -->
+    <string name="icon_spa">\uE547</string> <!-- Cái đẹp -->
+
+    <!-- Icon cho Profile và các mục menu -->
+    <string name="icon_person">\uE7FD</string> <!-- Hồ sơ (Profile) -->
+    <string name="icon_settings">\uE8B8</string> <!-- Cài đặt -->
+    <string name="icon_account_bank">\uE850</string> <!-- Tài khoản -->
+    <string name="icon_budget">\uE8F6</string> <!-- Ngân sách -->
+    <string name="icon_export">\uE2C4</string> <!-- Xuất dữ liệu -->
+    <string name="icon_logout">\uE9BA</string> <!-- Đăng xuất -->
+    <string name="icon_arrow_right">\uE315</string> <!-- Arrow right -->
+
+    <!-- Icon cho SignInActivity -->
+    <string name="icon_email">\uE0BE</string>
+    <string name="icon_lock">\uE897</string>
+    <string name="icon_visibility">\uE8F4</string> <!-- Visibility (show password) -->
+    <string name="icon_visibility_off">\uE8F5</string> <!-- Visibility off (hide password) -->
+</resources>

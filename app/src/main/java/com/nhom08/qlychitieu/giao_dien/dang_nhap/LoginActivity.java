@@ -1,12 +1,16 @@
 package com.nhom08.qlychitieu.giao_dien.dang_nhap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
+import android.text.InputType;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -25,8 +29,8 @@ import androidx.credentials.exceptions.GetCredentialException;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
+import com.nhom08.qlychitieu.MyApplication;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
-import com.nhom08.qlychitieu.csdl.DatabaseClient;
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.giao_dien.man_hinh_chinh.MainActivity;
 import com.nhom08.qlychitieu.mo_hinh.User;
@@ -36,28 +40,31 @@ import com.nhom08.qlychitieu.tien_ich.PasswordUtil;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class DangNhapActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText edtUsername, edtPassword;
-    private Button btnLogin;
-    private Button btnGoogleLogin;
+    private Button btnLogin, btnGoogleLogin;
+    private TextView iconPasswordVisibility;
     private CredentialManager credentialManager;
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private AppDatabase appDatabase;
+    private SharedPreferences sharedPreferences;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.dang_nhap);
+        setContentView(R.layout.activity_login);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         // Khởi tạo DatabaseClient và lấy AppDatabase một lần
-        appDatabase = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
+        appDatabase = ((MyApplication) getApplication()).getDatabase();
         mapping();
 
         credentialManager = CredentialManager.create(this);
@@ -65,7 +72,7 @@ public class DangNhapActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> loginUser());
         btnGoogleLogin.setOnClickListener(v -> signInWithGoogle());
         findViewById(R.id.btnViewRegister).setOnClickListener(v -> {
-            startActivity(new Intent(DangNhapActivity.this, DangKyActivity.class));
+            startActivity(new Intent(LoginActivity.this, SignInActivity.class));
             finish();
         });
     }
@@ -73,7 +80,6 @@ public class DangNhapActivity extends AppCompatActivity {
     private void loginUser() {
         final String email = edtUsername.getText().toString().trim();
         final String password = edtPassword.getText().toString().trim();
-        String hashPassword = PasswordUtil.hashPassword(password);
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -87,14 +93,21 @@ public class DangNhapActivity extends AppCompatActivity {
             handler.post(() -> {
                 if (existingUser == null) {
                     // Trường hợp email không tồn tại
-                    Toast.makeText(DangNhapActivity.this, "Tài khoản không tồn tại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Tài khoản không tồn tại", Toast.LENGTH_SHORT).show();
                 } else {
                     // Bước 2: Nếu email tồn tại, kiểm tra mật khẩu
                     if (!PasswordUtil.checkPassword(password, existingUser.getPassword())) {
-                        Toast.makeText(DangNhapActivity.this, "Sai mật khẩu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Sai mật khẩu", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(DangNhapActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+
+                        // Lưu email vào SharedPreferences
+                        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("loggedInEmail", email);
+                        editor.apply();
+
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
                 }
@@ -104,7 +117,7 @@ public class DangNhapActivity extends AppCompatActivity {
 
     private void signInWithGoogle() {
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
-                .setServerClientId("35380319939-n031rkvaire7qniekd3k5afakm7r145m.apps.googleusercontent.com") // Thay bằng Server Client ID của bạn
+                .setServerClientId("35380319939-n031rkvaire7qniekd3k5afakm7r145m.apps.googleusercontent.com")
                 .setFilterByAuthorizedAccounts(false)
                 .setAutoSelectEnabled(false)
                 .build();
@@ -116,7 +129,7 @@ public class DangNhapActivity extends AppCompatActivity {
         credentialManager.getCredentialAsync(
                 this,
                 request,
-                null, // CancellationSignal
+                null,
                 executor,
                 new CredentialManagerCallback<>() {
                     @Override
@@ -126,7 +139,7 @@ public class DangNhapActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
-                        Toast.makeText(DangNhapActivity.this, "Đăng nhập bằng Google thất bại: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Đăng nhập bằng Google thất bại: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -144,12 +157,18 @@ public class DangNhapActivity extends AppCompatActivity {
 
                 handler.post(() -> {
                     if (existingUser == null) {
-                        Toast.makeText(DangNhapActivity.this, "Chưa có tài khoản, vui lòng tạo tài khoản", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DangNhapActivity.this, DangKyActivity.class));
+                        Toast.makeText(LoginActivity.this, "Chưa có tài khoản, vui lòng tạo tài khoản", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, SignInActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(DangNhapActivity.this, "Đăng nhập bằng Google thành công", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
+                        Toast.makeText(LoginActivity.this, "Đăng nhập bằng Google thành công", Toast.LENGTH_SHORT).show();
+
+                        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("loggedInEmail", existingUser.getEmail());
+                        editor.apply();
+
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
                 });
@@ -158,7 +177,6 @@ public class DangNhapActivity extends AppCompatActivity {
             Toast.makeText(this, "Không nhận được thông tin Google", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     // Ánh xạ view từ XML
     private void mapping() {
@@ -176,5 +194,25 @@ public class DangNhapActivity extends AppCompatActivity {
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
         if (btnGoogleLogin == null)
             throw new IllegalStateException("btnGoogleLogin không có trong layout");
+
+        iconPasswordVisibility = findViewById(R.id.iconPasswordVisibility);
+        if (iconPasswordVisibility == null)
+            throw new IllegalStateException("iconPasswordVisibility không có trong layout");
+    }
+
+    // Xử lý show/hide password
+    public void togglePasswordVisibility(View view) {
+        isPasswordVisible = !isPasswordVisible;
+        if (isPasswordVisible) {
+            // Hiển thị mật khẩu
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            iconPasswordVisibility.setText(getString(R.string.icon_visibility));
+        } else {
+            // Ẩn mật khẩu
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            iconPasswordVisibility.setText(getString(R.string.icon_visibility_off));
+        }
+        // Di chuyển con trỏ về cuối văn bản
+        edtPassword.setSelection(edtPassword.getText().length());
     }
 }
