@@ -12,6 +12,8 @@ import java.util.List;
 public interface CategoryDAO {
     @Insert
     void insertCategory(Category category);
+    @Insert
+    void insertCategories(List<Category> categories);
     @Update
     void updateCategory(Category category);
     @Delete

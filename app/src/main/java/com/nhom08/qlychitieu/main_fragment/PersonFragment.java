@@ -8,17 +8,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.nhom08.qlychitieu.giao_dien.danh_muc.CategoryActivity;
 import com.nhom08.qlychitieu.MyApplication;
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
@@ -48,8 +46,6 @@ public class PersonFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person, container, false);
 
-
-
         try {
             // Khởi tạo SharedPreferences
             if (getActivity() != null) {
@@ -59,7 +55,7 @@ public class PersonFragment extends Fragment {
             // Khởi tạo views (biến cục bộ)
             TextView tvUsername = view.findViewById(R.id.tvUsername);
             TextView tvUserEmail = view.findViewById(R.id.tvUserEmail);
-            // Xóa imgAvatar nếu không sử dụng
+
             LinearLayout menuCategorySetting = view.findViewById(R.id.menuCategorySetting);
             LinearLayout menuAccount = view.findViewById(R.id.menuAccount);
             LinearLayout menuBudget = view.findViewById(R.id.menuBudget);
@@ -94,8 +90,8 @@ public class PersonFragment extends Fragment {
                                          LinearLayout menuBudget, LinearLayout menuExport, LinearLayout menuLogout) {
         if (menuCategorySetting != null) {
             menuCategorySetting.setOnClickListener(v -> {
-                Toast.makeText(getContext(), "Mở Cài đặt danh mục", Toast.LENGTH_SHORT).show();
-                // TODO: Thêm logic mở màn hình Cài đặt danh mục
+                Intent intent = new Intent(getActivity(), CategoryActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -222,18 +218,6 @@ public class PersonFragment extends Fragment {
         super.onDestroy();
         if (!executorService.isShutdown()) {
             executorService.shutdown();
-        }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Đổi màu status bar để phù hợp với màu vàng
-        if (getActivity() != null) {
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
         }
     }
 }

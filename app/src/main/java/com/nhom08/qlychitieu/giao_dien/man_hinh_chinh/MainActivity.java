@@ -20,7 +20,7 @@ import com.nhom08.qlychitieu.main_fragment.CharFragment;
 import com.nhom08.qlychitieu.main_fragment.HomeFragment;
 import com.nhom08.qlychitieu.main_fragment.PersonFragment;
 import com.nhom08.qlychitieu.main_fragment.ReportFragment;
-import com.nhom08.qlychitieu.giao_dien.them_giao_dich.AddActivity;
+import com.nhom08.qlychitieu.giao_dien.giao_dich.AddTransactionActivity;
 
 import java.util.function.Supplier;
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // Thiết lập BottomNavigationView
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.menu_add) {
-                startActivity(new Intent(this, AddActivity.class));
+                startActivity(new Intent(this, AddTransactionActivity.class));
                 return false; // không chọn tab này
             }
 

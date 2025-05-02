@@ -25,18 +25,12 @@
     <string name="menu_add">Thêm</string>
     <string name="add_new">Thêm mới giao dịch</string>
 
-    <!-- Chuỗi cho PersonFragment -->
-    <string name="username">Tên người dùng</string>
-    <string name="user_gmail">admin@gmail.com</string>
-    <string name="profile">Hồ sơ</string>
-    <string name="accountBank">Tài khoản ngân hàng</string>
-    <string name="budget">Ngân sách</string>
-    <string name="export_data">Xuất dữ liệu</string>
-    <string name="categorySetting">Cài đặt danh mục</string>
-    <string name="logout">Đăng xuất</string>
-    <string name="title">Tiêu đề</string>
-    <string name="avatar">Avatar</string>
-    <string name="menu_icon">Menu</string>
-    <string name="arrow_right">Mũi tên</string>
+    <string name="cancel">Hủy</string>
+    <string name="add">Thêm</string>
+
+    <string name="expense">Chi tiêu</string>
+    <string name="income">Thu nhập</string>
+    <string name="date_format">%d/%d/%d</string>
+    <string name="photo_attached">Photo Attached</string>
 
 </resources>
