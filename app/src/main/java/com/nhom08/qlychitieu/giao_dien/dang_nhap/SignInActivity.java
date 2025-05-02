@@ -38,11 +38,16 @@ import com.nhom08.qlychitieu.MyApplication;
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.mo_hinh.User;
+import com.nhom08.qlychitieu.mo_hinh.Category;
 import com.nhom08.qlychitieu.truy_van.UserDAO;
+import com.nhom08.qlychitieu.truy_van.CategoryDAO;
 import com.nhom08.qlychitieu.tien_ich.PasswordUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "SignInActivity";
@@ -56,6 +61,16 @@ public class SignInActivity extends AppCompatActivity {
     private AppDatabase appDatabase;
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
+
+    // Regex để kiểm tra định dạng email
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+    );
+
+    // Regex để kiểm tra mật khẩu: ít nhất 8 ký tự, 1 chữ hoa, 1 chữ số
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(
+            "^(?=.*[A-Z])(?=.*\\d).{8,}$"
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,12 +124,28 @@ public class SignInActivity extends AppCompatActivity {
         final String password = edtPassword.getText().toString().trim();
         final String confirmPassword = edtConfirmPassword.getText().toString().trim();
 
+        // Kiểm tra các trường có trống không
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Log.w(TAG, "registerUser: Missing required fields");
-            Toast.makeText(this, "Vui lòng nhập đầy TOW đủ thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Kiểm tra định dạng email
+        if (!isValidEmail(email)) {
+            Log.w(TAG, "registerUser: Invalid email format: " + email);
+            Toast.makeText(this, "Email không đúng định dạng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra mật khẩu
+        if (!isValidPassword(password)) {
+            Log.w(TAG, "registerUser: Password does not meet requirements");
+            Toast.makeText(this, "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 chữ số", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra mật khẩu và xác nhận mật khẩu có khớp không
         if (!password.equals(confirmPassword)) {
             Log.w(TAG, "registerUser: Passwords do not match");
             Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
@@ -137,6 +168,15 @@ public class SignInActivity extends AppCompatActivity {
                         executor.execute(() -> {
                             Log.d(TAG, "registerUser: Inserting new user into database");
                             userDAO.insertUser(newUser);
+                            // Lấy userId của người dùng vừa thêm
+                            User addedUser = userDAO.getUserByEmail(email);
+                            if (addedUser != null) {
+                                int userId = addedUser.getUserId();
+                                // Thêm các danh mục mặc định
+                                addDefaultCategories(userId);
+                            } else {
+                                Log.e(TAG, "registerUser: Could not retrieve userId after insertion");
+                            }
                             handler.post(() -> {
                                 Log.d(TAG, "registerUser: Registration successful, starting LoginActivity");
                                 Toast.makeText(SignInActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
@@ -153,6 +193,49 @@ public class SignInActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    // Kiểm tra định dạng email
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+
+    // Kiểm tra yêu cầu mật khẩu
+    private boolean isValidPassword(String password) {
+        return PASSWORD_PATTERN.matcher(password).matches();
+    }
+
+    // Thêm các danh mục mặc định cho người dùng
+    private void addDefaultCategories(int userId) {
+        Log.d(TAG, "addDefaultCategories: Adding default categories for userId: " + userId);
+        CategoryDAO categoryDAO = appDatabase.categoryDao();
+
+        List<Category> defaultCategories = new ArrayList<>();
+
+        // Danh mục Chi tiêu
+        defaultCategories.add(new Category(userId, "Mua sắm", "Expense", getString(R.string.icon_shopping_cart))); // \uE8CC
+        defaultCategories.add(new Category(userId, "Đồ ăn", "Expense", getString(R.string.icon_restaurant))); // \uE56F
+        defaultCategories.add(new Category(userId, "Điện thoại", "Expense", getString(R.string.icon_phone))); // \uE0CD
+        defaultCategories.add(new Category(userId, "Giải trí", "Expense", getString(R.string.icon_games))); // \uE021
+        defaultCategories.add(new Category(userId, "Sức khỏe", "Expense", getString(R.string.icon_health_and_safety))); // \uE1D5
+        defaultCategories.add(new Category(userId, "Giáo dục", "Expense", getString(R.string.icon_school))); // \uE80C
+        defaultCategories.add(new Category(userId, "Thể thao", "Expense", getString(R.string.icon_sports))); // \uE1A8
+        defaultCategories.add(new Category(userId, "Xã hội", "Expense", getString(R.string.icon_people))); // \uE7FB
+        defaultCategories.add(new Category(userId, "Vận tải", "Expense", getString(R.string.icon_directions_car))); // \uE531
+        defaultCategories.add(new Category(userId, "Quần áo", "Expense", getString(R.string.icon_laundry))); // \uE83A
+        defaultCategories.add(new Category(userId, "Xe hơi", "Expense", getString(R.string.icon_car_repair))); // \uE8EC
+
+        // Danh mục Thu nhập
+        defaultCategories.add(new Category(userId, "Lương", "Income", getString(R.string.icon_account_balance))); // \uE84F
+        defaultCategories.add(new Category(userId, "Thưởng", "Income", getString(R.string.icon_card_giftcard))); // \uE8F6
+        defaultCategories.add(new Category(userId, "Đầu tư", "Income", getString(R.string.icon_trending_up))); // \uE8E1
+
+        try {
+            categoryDAO.insertCategories(defaultCategories);
+            Log.d(TAG, "addDefaultCategories: Default categories added successfully");
+        } catch (Exception e) {
+            Log.e(TAG, "addDefaultCategories: Error while inserting default categories", e);
+        }
     }
 
     // Xử lý show/hide password cho trường Password
@@ -280,6 +363,15 @@ public class SignInActivity extends AppCompatActivity {
                                                 executor.execute(() -> {
                                                     Log.d(TAG, "handleGoogleSignInResult: Inserting new user into database");
                                                     userDAO.insertUser(newUser);
+                                                    // Lấy userId của người dùng vừa thêm
+                                                    User addedUser = userDAO.getUserByGoogleId(googleId);
+                                                    if (addedUser != null) {
+                                                        int userId = addedUser.getUserId();
+                                                        // Thêm các danh mục mặc định
+                                                        addDefaultCategories(userId);
+                                                    } else {
+                                                        Log.e(TAG, "handleGoogleSignInResult: Could not retrieve userId after insertion");
+                                                    }
                                                     handler.post(() -> {
                                                         Log.d(TAG, "handleGoogleSignInResult: Registration successful, starting LoginActivity");
                                                         Toast.makeText(SignInActivity.this, "Đăng ký tài khoản thành công", Toast.LENGTH_SHORT).show();

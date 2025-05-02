@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="category_settings">Cài đặt danh mục</string>
+    <string name="category">Danh mục</string>
+    <string name="add_category">Thêm danh mục</string>
+    <string name="category_name">Tên danh mục</string>
+    <string name="recycler_view_description">Danh sách danh mục</string>
+    <string name="tab_layout_description">Tab điều hướng danh mục</string>
+    <string name="back_button_description">Nút quay lại</string>
+    <string name="add_category_button_description">Nút thêm danh mục</string>
+    <string name="choose_icon">Chọn biểu tượng</string>
+    <string name="icon_list">Danh sách biểu tượng</string>
+    <string name="category_icon">Biểu tượng danh mục</string>
+    <string name="close">Đóng</string>
+    <string name="icon">Biểu tượng</string>
+    <string name="category_name_please">Vui lòng nhập tên danh mục</string>
+    <string name="optinal">Tùy chọn</string>
+</resources>

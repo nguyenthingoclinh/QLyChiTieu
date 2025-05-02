@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_transaction">Thêm giao dịch</string>
+    <string name="note_hint">Nhập ghi chú…</string>
+    <string name="note">Ghi chú</string>
+    <string name="today">Hôm nay</string>
+    <string name="attach_photo">Đính kèm ảnh</string>
+    <string name="receipt_image">Biên lai</string>
+    <string name="category_list">Danh sách danh mục</string>
+    <string name="amount">Số tiền</string>
+    <string name="amount_hint">Nhập số tiền</string>
+    <string name="save">Lưu</string>
+    <string name="cancel_button_description">Hủy</string>
+    <string name="number0">0</string>
+    <string name="number1">1</string>
+    <string name="number2">2</string>
+    <string name="number3">3</string>
+    <string name="number4">4</string>
+    <string name="number5">5</string>
+    <string name="number6">6</string>
+    <string name="number7">7</string>
+    <string name="number8">8</string>
+    <string name="number9">9</string>
+    <string name="btnPlus">+</string>
+    <string name="btnMinus">-</string>
+    <string name="number000">000</string>
+    <string name="btnDot"> . </string>
+    <string name="camera_icon">Biểu tượng camera</string>
+    <string name="btnClear">C</string>
+    <string name="no_categoies">Không có danh mục nào</string>
+
+    
+</resources>

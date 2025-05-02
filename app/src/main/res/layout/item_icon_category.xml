@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/iconView"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:fontFamily="@font/material_icons_outlined"
+    android:gravity="center"
+    android:textSize="24sp"
+    android:padding="8dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/icon_category_selector"
+    android:contentDescription="@string/icon" />

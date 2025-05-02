@@ -1,31 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Icons cho các danh mục trong AddActivity -->
-    <string name="icon_shopping_cart">\uE8CC</string> <!-- Mua sắm -->
-    <string name="icon_restaurant">\uE561</string> <!-- Đồ ăn -->
-    <string name="icon_phone">\uE0CD</string> <!-- Điện thoại -->
-    <string name="icon_games">\uE8B8</string> <!-- Giải trí -->
-    <string name="icon_health">\uE87D</string> <!-- Sức khỏe -->
-    <string name="icon_school">\uE80C</string> <!-- Giáo dục -->
-    <string name="icon_sports">\uE52F</string> <!-- Thể thao -->
-    <string name="icon_people">\uE7EF</string> <!-- Xã hội -->
-    <string name="icon_directions_car">\uE530</string> <!-- Vận tải -->
-    <string name="icon_laundry">\uE536</string> <!-- Quần áo -->
-    <string name="icon_car_repair">\uE531</string> <!-- Xe hơi -->
-    <string name="icon_credit_card">\uE870</string> <!-- Thẻ tín dụng -->
-    <string name="icon_card_giftcard">\uE8F4</string> <!-- Rương quà -->
-    <string name="icon_account_balance">\uE85C</string> <!-- Thẻ ngân hàng -->
-    <string name="icon_confirmation_number">\uE8F5</string> <!-- Vé số -->
-    <string name="icon_child_friendly">\uE7EE</string> <!-- Trẻ em -->
-    <string name="icon_local_florist">\uE345</string> <!-- Rau quả -->
-    <string name="icon_local_grocery_store">\uE87C</string> <!-- Hoa quả -->
-    <string name="icon_spa">\uE547</string> <!-- Cái đẹp -->
+    <!-- Icons cho các danh mục trong AddTransactionActivity -->
+    <string name="icon_shopping_cart">\uE8CC</string>
+    <string name="icon_restaurant">\uE56F</string>
+    <string name="icon_phone">\uE0CD</string>
+    <string name="icon_games">\uE021</string>
+    <string name="icon_health_and_safety">\uE1D5</string>
+    <string name="icon_school">\uE80C</string>
+    <string name="icon_sports">\uE1A8</string>
+    <string name="icon_people">\uE7FB</string>
+    <string name="icon_directions_car">\uE531</string>
+    <string name="icon_laundry">\uE83A</string>
+    <string name="icon_car_repair">\uE8EC</string>
+    <string name="icon_credit_card">\uE870</string>
+    <string name="icon_card_giftcard">\uE8F6</string>
+    <string name="icon_account_balance">\uE84F</string>
+    <string name="icon_confirmation_number">\uE638</string>
+    <string name="icon_child_friendly">\uEB42</string>
+    <string name="icon_local_florist">\uE545</string>
+    <string name="icon_local_grocery_store">\uE546</string>
+    <string name="icon_spa">\uEB4C</string>
+    <string name="icon_trending_up">\uE8E1</string>
+    <string name="icon_sports_volleyball">\uEA2B</string>
+    <string name="icon_movie">\uE02C</string>
+    <string name="icon_rocket_launch">\uEB5B</string>
+    <string name="icon_videogame_asset">\uE338</string>
+    <string name="icon_toys">\uE332</string>
+    <string name="icon_sports_esports">\uEA28</string>
+    <string name="icon_headphones">\uE023</string>
+    <string name="icon_palette">\uE40A</string>
+    <string name="icon_camera_alt">\uE412</string>
+    <string name="icon_music_note">\uE405</string>
+    <string name="icon_sports_soccer">\uEA2F</string>
+    <string name="icon_bread_slice">\uE32F</string>
+    <string name="icon_fastfood">\uE57A</string>
+    <string name="icon_cake">\uE7E9</string>
+    <string name="icon_local_dining">\uE561</string>
+    <string name="icon_icecream">\uEA69</string>
+    <string name="icon_local_pizza">\uE54E</string>
+    <string name="icon_lunch_dining">\uEA61</string>
+    <string name="icon_kebab_dining">\uEA62</string>
+    <string name="icon_bakery_dining">\uEA65</string>
+    <string name="icon_ramen_dining">\uEA64</string>
+    <string name="icon_local_drink">\uE544</string>
+    <string name="icon_coffee">\uE80F</string>
 
     <!-- Icon cho Profile và các mục menu -->
     <string name="icon_person">\uE7FD</string> <!-- Hồ sơ (Profile) -->
     <string name="icon_settings">\uE8B8</string> <!-- Cài đặt -->
     <string name="icon_account_bank">\uE850</string> <!-- Tài khoản -->
-    <string name="icon_budget">\uE8F6</string> <!-- Ngân sách -->
+    <string name="icon_budget">\uE84F</string> <!-- Ngân sách -->
     <string name="icon_export">\uE2C4</string> <!-- Xuất dữ liệu -->
     <string name="icon_logout">\uE9BA</string> <!-- Đăng xuất -->
     <string name="icon_arrow_right">\uE315</string> <!-- Arrow right -->
@@ -35,4 +59,16 @@
     <string name="icon_lock">\uE897</string>
     <string name="icon_visibility">\uE8F4</string> <!-- Visibility (show password) -->
     <string name="icon_visibility_off">\uE8F5</string> <!-- Visibility off (hide password) -->
+
+    <string name="icon_calendar">\uE935</string>
+    <string name="icon_clear">\uE14A</string>
+    <string name="icon_close">\uE5CD</string>
+    <string name="icon_check">\uE5CA</string>
+    <string name="icon_arrow_back">\uE5C4</string> <!-- Nút back -->
+    <string name="icon_add">\uE145</string><!-- Nút thêm danh mục -->
+    <string name="icon_more_vert">\uE5D4</string> <!-- Menu ba chấm -->
+    <string name="icon_add_a_photo">\uE439</string>
+    <string name="icon_done">\uE92F</string>
+    <string name="icon_remove">\uE15B</string>
+    <string name="icon_add_transaction">\uE145</string>
 </resources>
