@@ -33,7 +33,8 @@
         </activity>
         <activity
             android:name=".giao_dien.man_hinh_chinh.MainActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@
         <!-- Navigation bar color -->
         <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>
         <!-- Background color for the entire screen -->
-        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="Theme.QLyChiTieu" parent="Base.Theme.QLyChiTieu" />
