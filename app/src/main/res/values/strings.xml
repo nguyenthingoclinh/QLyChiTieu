@@ -30,7 +30,7 @@
 
     <string name="expense">Chi tiêu</string>
     <string name="income">Thu nhập</string>
+    <string name="balance">Số dư</string>
     <string name="date_format">%d/%d/%d</string>
     <string name="photo_attached">Photo Attached</string>
-
 </resources>

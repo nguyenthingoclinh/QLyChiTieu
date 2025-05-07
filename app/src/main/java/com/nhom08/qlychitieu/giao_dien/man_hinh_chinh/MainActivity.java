@@ -31,19 +31,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Chỉ bật EdgeToEdge trên API 29 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            EdgeToEdge.enable(this);
-        }
+
+        EdgeToEdge.enable(this);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Xử lý insets cho system bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0); // Không áp dụng padding bottom
-            return insets;
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, windowInsets) -> {
+            WindowInsetsCompat.Type.systemBars();
+            return WindowInsetsCompat.CONSUMED;
         });
+
 
         // Tính toán và áp dụng padding cho FrameLayout dựa trên chiều cao của BottomNavigationView
         binding.bottomNavigationView.post(() -> {
@@ -112,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.replace(R.id.frame_layout, fragment);
-        fragmentTransaction.addToBackStack(null);
+        if(!(fragment instanceof HomeFragment)) {
+            fragmentTransaction.addToBackStack(null);
+        }
         fragmentTransaction.commit();
     }
 }

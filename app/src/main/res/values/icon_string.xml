@@ -71,4 +71,7 @@
     <string name="icon_done">\uE92F</string>
     <string name="icon_remove">\uE15B</string>
     <string name="icon_add_transaction">\uE145</string>
+    <string name="icon_default">\uE88A</string>
+    <string name="icon_chevron_left">\uE5C4</string>
+    <string name="icon_chevron_right">\uE5C8</string>
 </resources>

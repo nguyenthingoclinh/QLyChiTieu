@@ -43,31 +43,44 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * AddTransactionActivity cho phép người dùng thêm giao dịch mới.
+ * - Hiển thị tab Chi tiêu và Thu nhập.
+ * - Người dùng có thể nhập số tiền, chọn danh mục, ngày, mô tả và đính kèm ảnh.
+ * - Lưu giao dịch vào database với số tiền âm nếu là Chi tiêu và dương nếu là Thu nhập.
+ */
 public class AddTransactionActivity extends AppCompatActivity {
-    private static final String TAG = "AddTransactionActivity";
-    private CategoryAdapter categoryAdapter;
-    private List<Category> categoryList;
-    private AppDatabase database;
-    private SharedPreferences sharedPreferences;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private int userId;
-    private LinearLayout layoutAddPhoto;
-    private TextView tvAmount, tvDate, tvAttachPhoto, tvNoCategories;
-    private EditText etDescription;
-    private ImageView ivReceipt;
-    private GridView gridCategories;
-    private Category selectedCategory;
-    private final StringBuilder amountInput = new StringBuilder();
-    private long selectedDate;
-    private String imagePath = "";
-    private ActivityResultLauncher<Intent> pickImageLauncher;
+    private static final String TAG = "AddTransactionActivity"; // Tag để ghi log lỗi hoặc thông tin debug
+    private CategoryAdapter categoryAdapter; // Adapter cho GridView hiển thị danh mục
+    private List<Category> categoryList; // Danh sách danh mục
+    private AppDatabase database; // Cơ sở dữ liệu Room để truy xuất và lưu dữ liệu
+    private SharedPreferences sharedPreferences; // SharedPreferences để lưu trữ thông tin người dùng
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor(); // Thread pool cho tác vụ bất đồng bộ
+    private int userId; // ID của người dùng hiện tại
+    private LinearLayout layoutAddPhoto; // Layout để đính kèm ảnh
+    private TextView tvAmount, tvDate, tvAttachPhoto, tvNoCategories; // Các TextView hiển thị thông tin
+    private EditText etDescription; // EditText để nhập mô tả giao dịch
+    private ImageView ivReceipt; // ImageView để hiển thị ảnh biên lai
+    private GridView gridCategories; // GridView hiển thị danh sách danh mục
+    private Category selectedCategory; // Danh mục được chọn
+    private final StringBuilder amountInput = new StringBuilder(); // Chuỗi để nhập số tiền
+    private long selectedDate; // Ngày được chọn (timestamp)
+    private String imagePath = ""; // Đường dẫn ảnh biên lai
+    private ActivityResultLauncher<Intent> pickImageLauncher; // Launcher để chọn ảnh từ thư viện
 
+    /**
+     * Khởi tạo giao diện và các thành phần của Activity.
+     * - Thiết lập Toolbar, TabLayout, GridView, và các nút.
+     * - Gán sự kiện click để chọn ngày, đính kèm ảnh, và lưu giao dịch.
+     * - Tải danh mục ban đầu (Chi tiêu).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Kích hoạt chế độ toàn màn hình
         setContentView(R.layout.activity_add_transaction);
 
+        // Xử lý padding cho system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             v.setPadding(insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
                     insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
@@ -89,18 +102,18 @@ public class AddTransactionActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        // Nút Back
+        // Nút Back để quay lại
         TextView btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
-        // Nút Save
+        // Nút Save để lưu giao dịch
         TextView btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(v -> saveTransaction());
 
-        // Khởi tạo TabLayout
+        // Khởi tạo TabLayout để chọn giữa Chi tiêu và Thu nhập
         TabLayout tabLayout = findViewById(R.id.tabLayout);
 
-        // Khởi tạo GridView và tvNoCategories
+        // Khởi tạo GridView và TextView hiển thị thông báo khi không có danh mục
         gridCategories = findViewById(R.id.gridCategories);
         tvNoCategories = findViewById(R.id.tvNoCategories);
         categoryList = new ArrayList<>();
@@ -116,7 +129,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.etDescription);
         ivReceipt = findViewById(R.id.ivReceipt);
 
-        // Khởi tạo ActivityResultLauncher để chọn ảnh
+        // Khởi tạo ActivityResultLauncher để chọn ảnh từ thư viện
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null && result.getData().getData() != null) {
                 imagePath = result.getData().getData().toString();
@@ -131,10 +144,11 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         });
 
-        // Xử lý sự kiện chuyển tab
+        // Xử lý sự kiện chuyển tab giữa Chi tiêu và Thu nhập
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                // Xóa các trường nhập liệu khi chuyển tab
                 etDescription.setText("");
                 tvAmount.setText(getString(R.string.number0));
                 amountInput.setLength(0);
@@ -144,11 +158,11 @@ public class AddTransactionActivity extends AppCompatActivity {
                 imagePath = "";
                 ivReceipt.setVisibility(View.GONE);
                 tvAttachPhoto.setText(getString(R.string.attach_photo));
-                // Hiện lại TextView chứa icon
                 TextView tvIconAddPhoto = layoutAddPhoto.findViewById(R.id.tvIconAddPhoto);
                 if (tvIconAddPhoto != null) {
                     tvIconAddPhoto.setVisibility(View.VISIBLE);
                 }
+                // Tải danh mục tương ứng với tab
                 if (tab.getPosition() == 0) {
                     loadExpenseCategories();
                 } else {
@@ -163,10 +177,10 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        // Thiết lập bàn phím số
+        // Thiết lập bàn phím số để nhập số tiền
         setupCalculatorButtons();
 
-        // Thiết lập chọn ngày
+        // Thiết lập chọn ngày giao dịch
         layoutDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -178,7 +192,6 @@ public class AddTransactionActivity extends AppCompatActivity {
                     (view, year1, month1, dayOfMonth) -> {
                         calendar.set(year1, month1, dayOfMonth);
                         selectedDate = calendar.getTimeInMillis();
-                        // Chuyển đổi timestamp thành chuỗi ngày tháng dễ đọc
                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                         String formattedDate = sdf.format(calendar.getTime());
                         tvDate.setText(formattedDate);
@@ -186,16 +199,20 @@ public class AddTransactionActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
-        // Thiết lập chọn ảnh
+        // Thiết lập chọn ảnh biên lai
         layoutAddPhoto.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
         });
 
-        // Lấy userId và tải dữ liệu ban đầu (Chi tiêu)
+        // Lấy userId và tải danh mục ban đầu (Chi tiêu)
         fetchUserIdAndLoadCategories();
     }
 
+    /**
+     * Lấy userId từ SharedPreferences và tải danh mục ban đầu (Chi tiêu).
+     * - Thực hiện bất đồng bộ bằng ExecutorService.
+     */
     private void fetchUserIdAndLoadCategories() {
         executorService.execute(() -> {
             try {
@@ -222,6 +239,10 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Tải danh mục Chi tiêu từ database.
+     * - Cập nhật GridView và hiển thị thông báo nếu không có danh mục.
+     */
     private void loadExpenseCategories() {
         executorService.execute(() -> {
             try {
@@ -248,6 +269,10 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Tải danh mục Thu nhập từ database.
+     * - Cập nhật GridView và hiển thị thông báo nếu không có danh mục.
+     */
     private void loadIncomeCategories() {
         executorService.execute(() -> {
             try {
@@ -274,8 +299,12 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Thiết lập các nút trên bàn phím số.
+     * - Xử lý nhập số, phép tính cộng/trừ, xóa và lưu giao dịch.
+     */
     private void setupCalculatorButtons() {
-        // Xử lý các nút số
+        // Xử lý các nút số (0-9, 000, dấu chấm)
         int[] numberButtonIds = new int[]{
                 R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
                 R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
@@ -300,7 +329,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         }
 
-        // Nút cộng và trừ
+        // Nút cộng
         AppCompatButton plusButton = findViewById(R.id.btnPlus);
         plusButton.setOnClickListener(v -> {
             String currentText = amountInput.toString();
@@ -315,6 +344,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         });
 
+        // Nút trừ
         AppCompatButton minusButton = findViewById(R.id.btnMinus);
         minusButton.setOnClickListener(v -> {
             String currentText = amountInput.toString();
@@ -336,17 +366,25 @@ public class AddTransactionActivity extends AppCompatActivity {
             tvAmount.setText(getString(R.string.number0));
         });
 
-        // Nút lưu
+        // Nút lưu giao dịch
         AppCompatButton doneButton = findViewById(R.id.btnDone);
         doneButton.setOnClickListener(v -> saveTransaction());
     }
 
+    /**
+     * Lưu giao dịch vào database.
+     * - Kiểm tra dữ liệu đầu vào (danh mục, số tiền).
+     * - Điều chỉnh số tiền: âm nếu là Chi tiêu, dương nếu là Thu nhập.
+     * - Lưu giao dịch bất đồng bộ và thông báo kết quả.
+     */
     private void saveTransaction() {
+        // Kiểm tra danh mục đã được chọn chưa
         if (selectedCategory == null) {
             Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Kiểm tra số tiền có hợp lệ không
         String amountStr = amountInput.toString();
         if (amountStr.isEmpty() || amountStr.equals("0")) {
             Toast.makeText(this, "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
@@ -355,6 +393,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         double amount;
         try {
+            // Xử lý phép tính nếu có dấu + hoặc -
             if (amountStr.contains("+") || amountStr.contains("-")) {
                 String[] parts = amountStr.split("[+\\-]");
                 double result = Double.parseDouble(parts[0]);
@@ -370,16 +409,29 @@ public class AddTransactionActivity extends AppCompatActivity {
             } else {
                 amount = Double.parseDouble(amountStr);
             }
+
+            // Điều chỉnh số tiền dựa trên loại danh mục
+            // Nếu là Chi tiêu (Expense), số tiền sẽ là âm
+            // Nếu là Thu nhập (Income), số tiền giữ nguyên (dương)
+            if (selectedCategory.getType().equals("Expense")) {
+                amount = -Math.abs(amount); // Đảm bảo số tiền là âm
+                Log.d(TAG, "Adjusted amount for Expense: " + amount);
+            } else if (selectedCategory.getType().equals("Income")) {
+                amount = Math.abs(amount); // Đảm bảo số tiền là dương
+                Log.d(TAG, "Adjusted amount for Income: " + amount);
+            }
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Lấy các thông tin khác của giao dịch
         String description = etDescription.getText().toString().trim();
         long date = selectedDate != 0 ? selectedDate : System.currentTimeMillis();
-        Log.d(TAG, "Saving transaction with date: " + date + " (timestamp in millis)"); // Debug log
+        Log.d(TAG, "Saving transaction with date: " + date + " (timestamp in millis)");
         Integer accountId = null; // TODO: Implement account selection logic in the future
 
+        // Tạo đối tượng Transaction và lưu vào database
         Transaction transaction = new Transaction(userId, selectedCategory.getCategoryId(), accountId, amount, date, description, imagePath);
         executorService.execute(() -> {
             try {
@@ -395,6 +447,9 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Hủy ExecutorService khi Activity bị hủy để tránh rò rỉ bộ nhớ.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -403,19 +458,30 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
     }
 
-    // Adapter cho GridView hiển thị danh sách danh mục
+    /**
+     * Adapter cho GridView hiển thị danh sách danh mục.
+     */
     public class CategoryAdapter extends android.widget.BaseAdapter {
-        private final List<Category> categories;
-        private Category selectedCategory; // Theo dõi danh mục được chọn
+        private final List<Category> categories; // Danh sách danh mục
+        private Category selectedCategory; // Danh mục được chọn
 
+        /**
+         * Constructor cho CategoryAdapter.
+         *
+         * @param categories Danh sách danh mục
+         */
         public CategoryAdapter(List<Category> categories) {
             this.categories = categories;
         }
 
-        // Phương thức để cập nhật danh mục được chọn từ bên ngoài
+        /**
+         * Cập nhật danh mục được chọn và làm mới giao diện.
+         *
+         * @param category Danh mục được chọn
+         */
         public void setSelectedCategory(Category category) {
             this.selectedCategory = category;
-            notifyDataSetChanged(); // Cập nhật giao diện
+            notifyDataSetChanged();
         }
 
         @Override
@@ -433,6 +499,16 @@ public class AddTransactionActivity extends AppCompatActivity {
             return position;
         }
 
+        /**
+         * Hiển thị mỗi danh mục trong GridView.
+         * - Hiển thị biểu tượng và tên danh mục.
+         * - Đổi màu chữ khi danh mục được chọn.
+         *
+         * @param position Vị trí của danh mục
+         * @param convertView View tái sử dụng
+         * @param parent ViewGroup cha
+         * @return View của danh mục
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = convertView;
@@ -450,7 +526,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 tvCategoryIcon.setText(icon);
                 tvCategoryIcon.setTextColor(category.equals(selectedCategory) ? Color.BLACK : Color.GRAY);
             } else {
-                tvCategoryIcon.setText(getString(R.string.icon_shopping_cart)); // Default icon
+                tvCategoryIcon.setText(getString(R.string.icon_shopping_cart));
             }
 
             // Hiển thị tên danh mục
@@ -460,11 +536,11 @@ public class AddTransactionActivity extends AppCompatActivity {
             // Cập nhật trạng thái được chọn
             view.setSelected(category.equals(selectedCategory));
 
-            // Xử lý sự kiện click
+            // Xử lý sự kiện click để chọn danh mục
             view.setOnClickListener(v -> {
-                this.selectedCategory = category; // Cập nhật danh mục được chọn trong adapter
-                AddTransactionActivity.this.selectedCategory = category; // Cập nhật trong activity
-                notifyDataSetChanged(); // Cập nhật giao diện
+                this.selectedCategory = category;
+                AddTransactionActivity.this.selectedCategory = category;
+                notifyDataSetChanged();
             });
 
             return view;
