@@ -15,6 +15,10 @@ public class User {
     private String resetCode;
     private String avatarPath;
 
+    // Constructor mặc định
+    @Ignore
+    public User() {
+    }
     // Constructor tối thiểu
     @Ignore
     public User( String fullName, String email, String password) {

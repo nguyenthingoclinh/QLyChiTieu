@@ -29,5 +29,12 @@
     <string name="btnClear">C</string>
     <string name="no_categoies">Không có danh mục nào</string>
 
+    <string name="error_no_category">Vui lòng chọn danh mục</string>
+    <string name="error_no_amount">Vui lòng nhập số tiền</string>
+    <string name="error_invalid_amount">Số tiền không hợp lệ</string>
+    <string name="error_saving_image">Không thể lưu ảnh</string>
+    <string name="success_save_transaction">Lưu giao dịch thành công</string>
+    <string name="error_save_transaction">Lỗi khi lưu giao dịch</string>
+
     
 </resources>

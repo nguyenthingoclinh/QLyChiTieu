@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_types_display">
+        <item>Chi tiêu</item>
+        <item>Thu nhập</item>
+    </string-array>
+
+    <string-array name="category_types_values">
+        <item>Expense</item>
+        <item>Income</item>
+    </string-array>
+</resources>

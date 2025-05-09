@@ -2,6 +2,7 @@ package com.nhom08.qlychitieu.mo_hinh;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -15,6 +16,12 @@ public class Category {
     private String name;
     private String type; // "Income" hoặc "Expense"
     private String icon;
+    @Ignore
+    private String displayType;
+
+    @Ignore
+    public Category() {
+    }
 
     public Category(int userId, String name, String type, String icon) {
         this.userId = userId;
@@ -61,5 +68,11 @@ public class Category {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+    public String getDisplayType() {
+        return displayType;
+    }
+    public void setDisplayType(String displayType) {
+        this.displayType = displayType;
     }
 }

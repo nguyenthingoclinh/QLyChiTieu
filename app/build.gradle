@@ -47,12 +47,12 @@ dependencies {
     implementation libs.play.services.auth
     implementation libs.androidx.credentials
     implementation libs.androidx.credentials.play.services.auth
-    implementation libs.play.services.identity
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
     implementation libs.firebase.auth
     implementation libs.bcrypt
     implementation libs.fragment
+    implementation libs.lifecycle.runtime.ktx
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

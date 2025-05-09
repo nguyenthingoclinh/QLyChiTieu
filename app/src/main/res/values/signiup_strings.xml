@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Google sign in -->
+    <string name="default_web_client_id">35380319939-n031rkvaire7qniekd3k5afakm7r145m.apps.googleusercontent.com</string>
+    <!-- Sign In Activity Strings -->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="btn_sign_in">ĐĂNG NHẬP</string>
+    <string name="btn_google_sign_in">Đăng nhập bằng Google</string>
+    <string name="text_forgot_password">Quên mật khẩu?</string>
+    <string name="text_dont_have_account">Chưa có tài khoản? </string>
+    <string name="text_sign_up">Đăng ký</string>
+
+    <!-- Error Messages -->
+    <string name="error_email_required">Vui lòng nhập email</string>
+    <string name="error_invalid_email">Email không hợp lệ</string>
+    <string name="error_password_required">Vui lòng nhập mật khẩu</string>
+    <string name="error_password_too_short">Mật khẩu phải có ít nhất 6 ký tự</string>
+    <string name="error_user_not_found">Tài khoản không tồn tại</string>
+    <string name="error_invalid_credentials">Email hoặc mật khẩu không đúng</string>
+    <string name="error_sign_in_failed">Đăng nhập thất bại. Vui lòng thử lại</string>
+    <string name="error_google_sign_in_failed">Đăng nhập Google thất bại</string>
+    <string name="error_database_error">Lỗi kết nối cơ sở dữ liệu</string>
+    <string name="error_create_user_failed">Tạo tài khoản thất bại</string>
+    <string name="error_email_exists">Email này đã được sử dụng</string>
+    <string name="error_registration_failed">Đăng ký thất bại</string>
+    <string name="error_fullname_required">Vui lòng nhập họ tên</string>
+    <string name="error_password_not_match">Mật khẩu xác nhận không khớp</string>
+
+    <!-- Loading Dialog -->
+    <string name="text_loading">Đang tải…</string>
+
+    <!-- Dialog Titles -->
+    <string name="title_forgot_password">Quên mật khẩu</string>
+    <string name="message_enter_email">Nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu</string>
+    <string name="btn_send">GỬI</string>
+    <string name="btn_cancel">HỦY</string>
+
+    <!-- Success Messages -->
+    <string name="success_reset_password">Hướng dẫn đặt lại mật khẩu đã được gửi đến email của bạn</string>
+    <string name="success_registration">Đăng ký thành công</string>
+</resources>
