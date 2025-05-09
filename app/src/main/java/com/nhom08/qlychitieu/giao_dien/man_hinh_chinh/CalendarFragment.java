@@ -1,4 +1,4 @@
-package com.nhom08.qlychitieu;
+package com.nhom08.qlychitieu.giao_dien.man_hinh_chinh;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.nhom08.qlychitieu.R;
 
 
 public class CalendarFragment extends Fragment {

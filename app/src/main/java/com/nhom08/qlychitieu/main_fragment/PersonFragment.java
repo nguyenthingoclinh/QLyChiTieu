@@ -16,12 +16,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.nhom08.qlychitieu.giao_dien.danh_muc.CategoryActivity;
 import com.nhom08.qlychitieu.MyApplication;
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
-import com.nhom08.qlychitieu.giao_dien.dang_nhap.LoginActivity;
+import com.nhom08.qlychitieu.giao_dien.nguoi_dung.LogInActivity;
 import com.nhom08.qlychitieu.mo_hinh.User;
+import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.truy_van.UserDAO;
 
 import java.util.concurrent.ExecutorService;
@@ -178,12 +182,60 @@ public class PersonFragment extends Fragment {
         }
     }
 
+    private void logout() {
+        try {
+            if (sharedPreferences != null) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                // Xóa tất cả thông tin đăng nhập
+                editor.remove(Constants.KEY_USER_EMAIL);
+                editor.remove(Constants.KEY_IS_LOGGED_IN);
+                editor.remove(Constants.KEY_LOGIN_TYPE);
+                editor.apply();
+            }
+
+            // Kiểm tra nếu đăng nhập bằng Google thì sign out Google
+            String loginType = sharedPreferences.getString(Constants.KEY_LOGIN_TYPE, "");
+            if (Constants.LOGIN_TYPE_GOOGLE.equals(loginType)) {
+                signOutGoogle();
+            }
+
+            navigateToLogin();
+        } catch (Exception e) {
+            Log.e(TAG, "Error in logout: " + e.getMessage(), e);
+        }
+    }
+
+    private void signOutGoogle() {
+        if (getActivity() == null) return;
+
+        try {
+            // Khởi tạo Google Sign In Client
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(),
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(getString(R.string.default_web_client_id))
+                            .requestEmail()
+                            .build());
+
+            // Sign out
+            googleSignInClient.signOut().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Google sign out successful");
+                } else {
+                    Log.e(TAG, "Google sign out failed", task.getException());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error signing out Google: " + e.getMessage(), e);
+        }
+    }
+
     private void navigateToLogin() {
         if (!isFragmentAttached || getActivity() == null) return;
 
         getActivity().runOnUiThread(() -> {
             try {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                Intent intent = new Intent(getActivity(), LogInActivity.class);
+                // Xóa tất cả activity stack để người dùng không thể back lại
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 getActivity().finish();
@@ -191,20 +243,6 @@ public class PersonFragment extends Fragment {
                 Log.e(TAG, "Error in navigateToLogin: " + e.getMessage(), e);
             }
         });
-    }
-
-    private void logout() {
-        try {
-            if (sharedPreferences != null) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("loggedInEmail");
-                editor.apply();
-            }
-
-            navigateToLogin();
-        } catch (Exception e) {
-            Log.e(TAG, "Error in logout: " + e.getMessage(), e);
-        }
     }
 
     @Override

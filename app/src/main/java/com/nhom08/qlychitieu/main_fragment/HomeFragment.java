@@ -32,10 +32,10 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nhom08.qlychitieu.CalendarFragment;
+import com.nhom08.qlychitieu.giao_dien.man_hinh_chinh.CalendarFragment;
 import com.nhom08.qlychitieu.MyApplication;
 import com.nhom08.qlychitieu.R;
-import com.nhom08.qlychitieu.TotalBalanceFragment;
+import com.nhom08.qlychitieu.giao_dien.man_hinh_chinh.TotalBalanceFragment;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.mo_hinh.Category;
 import com.nhom08.qlychitieu.mo_hinh.Transaction;

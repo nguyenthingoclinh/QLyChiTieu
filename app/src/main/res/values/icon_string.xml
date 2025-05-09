@@ -54,7 +54,7 @@
     <string name="icon_logout">\uE9BA</string> <!-- Đăng xuất -->
     <string name="icon_arrow_right">\uE315</string> <!-- Arrow right -->
 
-    <!-- Icon cho SignInActivity -->
+    <!-- Icon cho SignUpActivity -->
     <string name="icon_email">\uE0BE</string>
     <string name="icon_lock">\uE897</string>
     <string name="icon_visibility">\uE8F4</string> <!-- Visibility (show password) -->

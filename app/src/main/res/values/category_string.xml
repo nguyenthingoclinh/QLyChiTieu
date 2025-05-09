@@ -3,6 +3,7 @@
     <string name="category_settings">Cài đặt danh mục</string>
     <string name="category">Danh mục</string>
     <string name="add_category">Thêm danh mục</string>
+    <string name="edit_category">Sửa danh mục</string>
     <string name="category_name">Tên danh mục</string>
     <string name="recycler_view_description">Danh sách danh mục</string>
     <string name="tab_layout_description">Tab điều hướng danh mục</string>
@@ -15,4 +16,20 @@
     <string name="icon">Biểu tượng</string>
     <string name="category_name_please">Vui lòng nhập tên danh mục</string>
     <string name="optinal">Tùy chọn</string>
+    <string name="delete_category">Xóa danh mục</string>
+    <string name="delete_category_confirmation">Bạn có chắc muốn xóa danh mục này?</string>
+    <string name="delete">Xóa</string>
+    <string name="edit">Sửa</string>
+    <string name="cancel">Hủy</string>
+    <string name="category_deleted">Đã xóa danh mục</string>
+    <string name="error_loading_user">Không thể tải thông tin người dùng</string>
+    <string name="error_loading_categories">Không thể tải danh mục</string>
+    <string name="error_deleting_category">Lỗi khi xóa danh mục</string>
+    <string name="fill_all_fields">Vui lòng điền đầy đủ thông tin</string>
+    <string name="error_adding_category">Lỗi khi thêm danh mục</string>
+    <string name="enter_category_name">Vui lòng nhập tên danh mục</string>
+    <string name="select_category_icon">Vui lòng chọn biểu tượng</string>
+    <string name="category_added_successfully">Thêm danh mục thành công</string>
+    <string name="category_updated_successfully">Cập nhật danh mục thành công</string>
+    <string name="error_updating_category">Lỗi khi cập nhật danh mục</string>
 </resources>

@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface UserDAO {
     @Insert
-    void insertUser(User user);
+    long insertUser(User user);
 
     @Update
     void updateUser(User user);
