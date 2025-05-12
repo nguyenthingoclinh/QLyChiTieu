@@ -19,7 +19,7 @@
         <!-- Header vàng bo cong -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="250dp">
 
             <View
                 android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                 android:id="@+id/userInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="60dp"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:gravity="center_vertical">

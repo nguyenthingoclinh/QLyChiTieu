@@ -5,16 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialRequest;
@@ -34,9 +28,6 @@ import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
 import com.nhom08.qlychitieu.tien_ich.PasswordUtil;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 public class LogInActivity extends AppCompatActivity {
     private static final String TAG = "LogInActivity";
 
@@ -44,128 +35,91 @@ public class LogInActivity extends AppCompatActivity {
     private CredentialManager credentialManager;
     private MessageUtils messageUtils;
     private AppDatabase appDatabase;
-    private final Executor executor = Executors.newSingleThreadExecutor();
+    private MyApplication app;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: Started");
 
-        // Kiểm tra trạng thái đăng nhập trước khi khởi tạo UI
+        // Kiểm tra trạng thái đăng nhập trước
         if (checkLoginState()) {
             navigateToMain();
             return;
         }
 
-        Log.d(TAG, "onCreate: No saved login state, showing login screen");
-
-        initializeUI();
-        initializeDatabase();
-        setupComponents();
-        setupClickListeners();
-    }
-    private boolean checkLoginState() {
-        SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        boolean isLoggedIn = prefs.getBoolean(Constants.KEY_IS_LOGGED_IN, false);
-        String savedEmail = prefs.getString(Constants.KEY_USER_EMAIL, null);
-
-        return isLoggedIn && savedEmail != null;
-    }
-    private void initializeUI() {
-        EdgeToEdge.enable(this);
-        binding = ActivityLogInBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        initializeComponents();
+        setupViews();
     }
 
-    private void saveLoginState(String email, String loginType) {
-        SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
-                .putString(Constants.KEY_USER_EMAIL, email)
-                .putString(Constants.KEY_LOGIN_TYPE, loginType)
-                .apply();
-    }
+    private void initializeComponents() {
+        app = MyApplication.getInstance();
+        messageUtils = new MessageUtils(this);
+        appDatabase = app.getDatabase();
+        credentialManager = CredentialManager.create(this);
 
-
-    private void initializeDatabase() {
-        try {
-            appDatabase = ((MyApplication) getApplication()).getDatabase();
-            if (appDatabase == null) {
-                Log.e(TAG, "initializeDatabase: AppDatabase is null");
-                messageUtils.showError("Không thể khởi tạo cơ sở dữ liệu");
-                finish();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "initializeDatabase: Error", e);
-            messageUtils.showError("Lỗi khởi tạo cơ sở dữ liệu");
+        if (appDatabase == null) {
+            messageUtils.showError(R.string.error_db_init);
             finish();
         }
     }
 
-    private void setupComponents() {
-        messageUtils = new MessageUtils(this);
-        credentialManager = CredentialManager.create(this);
-    }
+    private void setupViews() {
+        binding = ActivityLogInBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-    private void setupClickListeners() {
         binding.btnLogin.setOnClickListener(v -> loginUser());
         binding.btnGoogleLogin.setOnClickListener(v -> signInWithGoogle());
         binding.btnViewRegister.setOnClickListener(v -> navigateToSignUp());
-        binding.iconPasswordVisibility.setOnClickListener(v -> togglePasswordVisibility());
         binding.btnForgotPassword.setOnClickListener(v -> handleForgotPassword());
     }
 
+    private boolean checkLoginState() {
+        SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        return prefs.getBoolean(Constants.KEY_IS_LOGGED_IN, false) &&
+                prefs.getString(Constants.KEY_USER_EMAIL, null) != null;
+    }
+
     private void loginUser() {
-        String email = binding.edtUsername.getText().toString().trim();
-        String password = binding.edtPassword.getText().toString();
+        String email = String.valueOf(binding.edtEmail.getText()).trim();
+        String password = String.valueOf(binding.edtPassword.getText());
 
         if (!validateLoginInputs(email, password)) {
             return;
         }
 
-        executor.execute(() -> {
+        app.getExecutorService().execute(() -> {
             try {
                 User user = appDatabase.userDao().getUserByEmail(email);
 
                 if (user == null) {
-                    showError("Tài khoản không tồn tại");
+                    showError(getString(R.string.error_account_not_exist));
                     return;
                 }
 
                 if (!PasswordUtil.checkPassword(password, user.getPassword())) {
-                    showError("Sai mật khẩu");
+                    showError(getString(R.string.error_wrong_password));
                     return;
                 }
 
-                handleSuccessfulLogin(email);
+                handleSuccessfulLogin(user);
             } catch (Exception e) {
                 Log.e(TAG, "loginUser: Error", e);
-                showError("Lỗi đăng nhập: " + e.getMessage());
+                showError(getString(R.string.error_login_failed));
             }
         });
     }
 
-    private void handleForgotPassword() {
-        // TODO: Implement forgot password functionality
-        showError("Tính năng đang được phát triển");
-    }
-
     private boolean validateLoginInputs(String email, String password) {
         if (TextUtils.isEmpty(email)) {
-            messageUtils.showError("Vui lòng nhập email");
-            binding.edtUsername.requestFocus();
+            binding.edtEmail.setError(getString(R.string.error_empty_email));
+            binding.edtEmail.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(password)) {
-            messageUtils.showError("Vui lòng nhập mật khẩu");
+            binding.edtPassword.setError(getString(R.string.error_empty_password));
             binding.edtPassword.requestFocus();
             return false;
         }
@@ -188,7 +142,7 @@ public class LogInActivity extends AppCompatActivity {
                     this,
                     request,
                     null,
-                    executor,
+                    app.getExecutorService(),
                     new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                         @Override
                         public void onResult(GetCredentialResponse result) {
@@ -197,73 +151,70 @@ public class LogInActivity extends AppCompatActivity {
 
                         @Override
                         public void onError(@NonNull GetCredentialException e) {
-                            Log.e(TAG, "Google sign in error", e);
-                            showError("Đăng nhập Google thất bại: " + e.getLocalizedMessage());
+                            showError(getString(R.string.error_google_signin));
                         }
                     }
             );
         } catch (Exception e) {
             Log.e(TAG, "signInWithGoogle: Error", e);
-            showError("Lỗi đăng nhập Google");
+            showError(getString(R.string.error_google_signin));
         }
     }
 
     private void handleGoogleSignInResult(GetCredentialResponse response) {
         if (!(response.getCredential() instanceof CustomCredential) ||
-                !GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(response.getCredential().getType())) {
-            showError("Không nhận được thông tin Google hợp lệ");
+                !GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(
+                        response.getCredential().getType())) {
+            showError(getString(R.string.error_invalid_google_credential));
             return;
         }
 
         try {
-            GoogleIdTokenCredential googleCredential = GoogleIdTokenCredential.createFrom(response.getCredential().getData());
+            GoogleIdTokenCredential googleCredential = GoogleIdTokenCredential.createFrom(
+                    response.getCredential().getData());
             String googleId = googleCredential.getId();
 
-            executor.execute(() -> {
+            app.getExecutorService().execute(() -> {
                 try {
                     User user = appDatabase.userDao().getUserByGoogleId(googleId);
-
                     if (user == null) {
-                        showError("Chưa có tài khoản, vui lòng đăng ký");
+                        showError(getString(R.string.error_need_register));
                         navigateToSignUp();
                         return;
                     }
-
-                    handler.post(() -> {
-                        saveLoginState(user.getEmail(), Constants.LOGIN_TYPE_GOOGLE);
-                        showSuccess();
-                        navigateToMain();
-                    });
+                    handleSuccessfulLogin(user);
                 } catch (Exception e) {
                     Log.e(TAG, "handleGoogleSignInResult: Error", e);
-                    showError("Lỗi xác thực tài khoản Google");
+                    showError(getString(R.string.error_google_auth));
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "handleGoogleSignInResult: Error parsing credential", e);
-            showError("Lỗi xử lý thông tin Google");
+            showError(getString(R.string.error_google_info));
         }
     }
 
-    private void handleSuccessfulLogin(String email) {
+    private void handleSuccessfulLogin(User user) {
         handler.post(() -> {
-            saveLoginState(email, Constants.LOGIN_TYPE_NORMAL);
-            showSuccess();
+            saveLoginState(user);
+            messageUtils.showSuccess(R.string.login_success);
             navigateToMain();
         });
     }
 
-    private void togglePasswordVisibility() {
-        isPasswordVisible = !isPasswordVisible;
-        int inputType = isPasswordVisible ?
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD :
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+    private void saveLoginState(User user) {
+        app.setCurrentUser(user);
+        SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
+                .putString(Constants.KEY_USER_EMAIL, user.getEmail())
+                .putString(Constants.KEY_LOGIN_TYPE, user.getGoogleId() != null ?
+                        Constants.LOGIN_TYPE_GOOGLE : Constants.LOGIN_TYPE_NORMAL)
+                .apply();
+    }
 
-        binding.edtPassword.setInputType(inputType);
-        binding.iconPasswordVisibility.setText(getString(
-                isPasswordVisible ? R.string.icon_visibility : R.string.icon_visibility_off
-        ));
-        binding.edtPassword.setSelection(binding.edtPassword.getText().length());
+    private void handleForgotPassword() {
+        // TODO: Implement forgot password functionality
+        messageUtils.showError(R.string.feature_in_development);
     }
 
     private void navigateToMain() {
@@ -278,10 +229,6 @@ public class LogInActivity extends AppCompatActivity {
 
     private void showError(String message) {
         handler.post(() -> messageUtils.showError(message));
-    }
-
-    private void showSuccess() {
-        handler.post(() -> messageUtils.showSuccess("Đăng nhập thành công"));
     }
 
     @Override

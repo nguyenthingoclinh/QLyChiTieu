@@ -1,6 +1,5 @@
 package com.nhom08.qlychitieu.giao_dien.danh_muc;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupMenu;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,69 +22,58 @@ import com.nhom08.qlychitieu.adapter.CategoryAdapter;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.databinding.ActivityCategoryBinding;
 import com.nhom08.qlychitieu.mo_hinh.Category;
+import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class CategoryActivity extends AppCompatActivity implements CategoryAdapter.OnCategoryClickListener {
     private static final String TAG = CategoryActivity.class.getSimpleName();
-
     private ActivityCategoryBinding binding;
     private CategoryAdapter categoryAdapter;
     private MessageUtils messageUtils;
     private AppDatabase database;
-    private SharedPreferences sharedPreferences;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService;
     private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setupStatusBar();
-        setupNavigationBar();
+        setupWindowDecorations();
 
         binding = ActivityCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initializeComponents();
+        initGlobals();
         setupViews();
-        fetchUserAndLoadCategories();
+        loadCategories(Constants.CATEGORY_TYPE_EXPENSE); // Load default tab
     }
 
-    private void setupStatusBar() {
+    private void setupWindowDecorations() {
         Window window = getWindow();
-
-        // Thêm flag để vẽ phía sau status bar
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-        // Xóa flag mặc định
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-        // Thiết lập màu cho status bar cùng màu với toolbar
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-    }
-
-    private void setupNavigationBar() {
-        Window window = getWindow();
-        // Thiết lập màu trắng cho navigation bar
         window.setNavigationBarColor(Color.WHITE);
-        // Thiết lập icon navigation bar màu tối vì nền trắng
-        View decorView = window.getDecorView();
-        int flags = decorView.getSystemUiVisibility();
-        flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-        decorView.setSystemUiVisibility(flags);
+        int flags = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        window.getDecorView().setSystemUiVisibility(flags);
     }
 
-    private void initializeComponents() {
-        database = ((MyApplication) getApplication()).getDatabase();
-        sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+    private void initGlobals() {
+        MyApplication app = MyApplication.getInstance();
+        database = app.getDatabase();
+        executorService = app.getExecutorService();
         messageUtils = new MessageUtils(this);
-        // Setup RecyclerView và Adapter
-        categoryAdapter = new CategoryAdapter(this, this);
+        userId = app.getCurrentUserId();
+
+        if (userId == -1) {
+            messageUtils.showError(R.string.error_user_not_found);
+            finish();
+        }
+
+        categoryAdapter = new CategoryAdapter(this, new ArrayList<>(), this);
         binding.recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerViewCategories.setAdapter(categoryAdapter);
     }
@@ -97,27 +86,19 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
 
     private void setupToolbar() {
         setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
         binding.btnBack.setOnClickListener(v -> finish());
     }
 
     private void setupTabLayout() {
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText(R.string.expense));
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText(R.string.income));
-
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                loadCategories(tab.getPosition() == 0 ? "Expense" : "Income");
+            @Override public void onTabSelected(TabLayout.Tab tab) {
+                loadCategories(tab.getPosition() == 0 ? Constants.CATEGORY_TYPE_EXPENSE : Constants.CATEGORY_TYPE_INCOME);
             }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
@@ -125,47 +106,27 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
         binding.btnAddCategory.setOnClickListener(v -> showAddCategoryDialog());
     }
 
-    private void fetchUserAndLoadCategories() {
+    private void loadCategories(String type) {
         executorService.execute(() -> {
             try {
-                String email = sharedPreferences.getString("loggedInEmail", null);
-                if (email == null) {
-                    Log.e(TAG, "No logged-in user found");
-                    runOnUiThread(() -> messageUtils.showError(R.string.error_user_not_found));
-                    return;
-                }
-
-                userId = database.userDao().getUserByEmail(email).getUserId();
-                runOnUiThread(() -> loadCategories("Expense"));
+                List<Category> categories = database.categoryDao().getCategoriesByType(userId, type);
+                runOnUiThread(() -> updateCategoryList(categories));
             } catch (Exception e) {
-                Log.e(TAG, "Error fetching user: " + e.getMessage());
-                runOnUiThread(() -> messageUtils.showError(R.string.error_loading_user));
+                handleError("Error loading categories: " + e.getMessage(), R.string.error_loading_categories);
             }
         });
     }
 
-    public void loadCategories(String type) {
-        executorService.execute(() -> {
-            try {
-                List<Category> categories = database.categoryDao()
-                        .getCategoriesByType(userId, type);
-                runOnUiThread(() -> updateCategoryList(categories));
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading categories: " + e.getMessage());
-                runOnUiThread(() -> messageUtils.showError(R.string.error_loading_categories));
-            }
-        });
+    private void handleError(String logMessage, @StringRes int userMessage) {
+        Log.e(TAG, logMessage);
+        runOnUiThread(() -> messageUtils.showError(userMessage));
     }
 
     private void updateCategoryList(List<Category> categories) {
-        categories.forEach(category -> {
-            // Chuyển đổi type từ tiếng Anh sang tiếng Việt khi hiển thị
-            if ("Expense".equals(category.getType())) {
-                category.setDisplayType("Chi tiêu");
-            } else if ("Income".equals(category.getType())) {
-                category.setDisplayType("Thu nhập");
-            }
-        });
+        for (Category category : categories) {
+            // Hiển thị tiếng Việt cho type
+            category.setDisplayType("Expense".equals(category.getType()) ? "Chi tiêu" : "Thu nhập");
+        }
         categoryAdapter.updateCategories(categories);
     }
 
@@ -179,7 +140,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
         PopupMenu popup = new PopupMenu(this, anchor);
         popup.getMenu().add(Menu.NONE, 1, Menu.NONE, R.string.edit);
         popup.getMenu().add(Menu.NONE, 2, Menu.NONE, R.string.delete);
-
         popup.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == 1) {
                 showEditCategoryDialog(category);
@@ -190,17 +150,19 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
             }
             return false;
         });
-
         popup.show();
     }
 
     private void showAddCategoryDialog() {
-        String type = binding.tabLayout.getSelectedTabPosition() == 0 ? "Expense" : "Income";
+        String type = binding.tabLayout.getSelectedTabPosition() == 0
+                ? Constants.CATEGORY_TYPE_EXPENSE
+                : Constants.CATEGORY_TYPE_INCOME;
         AddCategoryDialog dialog = new AddCategoryDialog(
                 this,
                 userId,
+                type,
                 database,
-                () -> loadCategories(type)  // Callback khi thêm xong
+                () -> loadCategories(type)
         );
         dialog.show(getSupportFragmentManager(), "AddCategoryDialog");
     }
@@ -210,7 +172,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
                 this,
                 category,
                 database,
-                () -> loadCategories(category.getType())  // Callback khi sửa xong
+                () -> loadCategories(category.getType())
         );
         dialog.show(getSupportFragmentManager(), "EditCategoryDialog");
     }
@@ -242,9 +204,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!executorService.isShutdown()) {
-            executorService.shutdown();
-        }
         binding = null;
     }
 }

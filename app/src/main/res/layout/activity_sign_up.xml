@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:padding="16dp"
     tools:context=".giao_dien.nguoi_dung.SignUpActivity">
 
     <!-- Logo -->
@@ -14,195 +15,163 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="50dp"
+        android:contentDescription="@string/logo"
         android:src="@drawable/screenshot_2025_03_27_205702"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Fullname -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fullNameContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+    <TextView
+        android:id="@+id/iconFullName"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginTop="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/material_icons_outlined"
+        android:gravity="center"
+        android:text="@string/icon_person"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLogo">
+        app:layout_constraintTop_toBottomOf="@id/imgLogo" />
 
-        <TextView
-            android:id="@+id/iconFullName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_person"
-            android:textSize="30sp"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <EditText
-            android:id="@+id/edtFullName"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:autofillHints="name"
-            android:hint="@string/fullname"
-            android:inputType="textPersonName"
-            app:layout_constraintStart_toEndOf="@id/iconFullName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Username (Email) -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/usernameContainer"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutFullName"
+        style="@style/CustomTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/iconFullName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fullNameContainer">
+        app:layout_constraintStart_toEndOf="@id/iconFullName"
+        app:layout_constraintTop_toTopOf="@id/iconFullName">
 
-        <TextView
-            android:id="@+id/iconUsername"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtFullName"
+            style="@style/CustomTextInputEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_email"
-            android:textSize="30sp"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:hint="@string/fullname"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtUsername"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:autofillHints="emailAddress"
+    <!-- Email -->
+    <TextView
+        android:id="@+id/iconEmail"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/material_icons_outlined"
+        android:gravity="center"
+        android:text="@string/icon_email"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutFullName" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutEmail"
+        style="@style/CustomTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/iconEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iconEmail"
+        app:layout_constraintTop_toTopOf="@id/iconEmail">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEmail"
+            style="@style/CustomTextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/username_hint"
-            android:inputType="textEmailAddress"
-            app:layout_constraintStart_toEndOf="@id/iconUsername"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/passwordContainer"
+    <TextView
+        android:id="@+id/iconPassword"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="35dp"
+        android:fontFamily="@font/material_icons_outlined"
+        android:gravity="center"
+        android:text="@string/icon_lock"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutEmail" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutPassword"
+        style="@style/CustomTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="12dp"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/black"
+        app:errorEnabled="true"
+        app:errorIconTint="@color/error_color"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/iconPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/usernameContainer">
+        app:layout_constraintStart_toEndOf="@id/iconPassword"
+        app:layout_constraintTop_toTopOf="@id/iconPassword">
 
-        <TextView
-            android:id="@+id/iconPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_lock"
-            android:textSize="30sp"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtPassword"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:autofillHints="password"
-            android:hint="@string/password_hint"
-            android:inputType="textPassword"
-            app:layout_constraintStart_toEndOf="@id/iconPassword"
-            app:layout_constraintEnd_toStartOf="@id/iconPasswordVisibility"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <TextView
-            android:id="@+id/iconPasswordVisibility"
-            android:layout_width="wrap_content"
+            style="@style/CustomTextInputEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_visibility_off"
-            android:textSize="30sp"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            android:onClick="togglePasswordVisibility"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:hint="@string/password_hint"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Confirm Password -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/confirmPasswordContainer"
+    <TextView
+        android:id="@+id/iconConfirmPassword"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/material_icons_outlined"
+        android:gravity="center"
+        android:text="@string/icon_lock"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutPassword" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutConfirmPassword"
+        style="@style/CustomTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="12dp"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/black"
+        app:errorEnabled="true"
+        app:errorIconTint="@color/error_color"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintBottom_toBottomOf="@id/iconConfirmPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordContainer">
+        app:layout_constraintStart_toEndOf="@id/iconConfirmPassword"
+        app:layout_constraintTop_toTopOf="@id/iconConfirmPassword">
 
-        <TextView
-            android:id="@+id/iconConfirmPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_lock"
-            android:textSize="30sp"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtConfirmPassword"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:autofillHints="password"
-            android:hint="@string/password_confirm"
-            android:inputType="textPassword"
-            app:layout_constraintStart_toEndOf="@id/iconConfirmPassword"
-            app:layout_constraintEnd_toStartOf="@id/iconConfirmPasswordVisibility"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <TextView
-            android:id="@+id/iconConfirmPasswordVisibility"
-            android:layout_width="wrap_content"
+            style="@style/CustomTextInputEditText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_visibility_off"
-            android:textSize="28sp"
-            android:textColor="@android:color/black"
-            android:padding="5dp"
-            android:onClick="toggleConfirmPasswordVisibility"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:hint="@string/password_confirm"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Register Button -->
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="45dp"
         android:backgroundTint="#1976D2"
         android:text="@string/register_button"
@@ -210,7 +179,7 @@
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirmPasswordContainer" />
+        app:layout_constraintTop_toBottomOf="@id/layoutConfirmPassword" />
 
     <!-- Google Register Button -->
     <Button
@@ -218,16 +187,11 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="5dp"
-        android:backgroundTint="#FFFFFF"
-        android:elevation="3dp"
+        android:layout_marginTop="16dp"
         android:text="@string/google_register"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:translationY="1dp"
-        android:translationZ="1dp"
         app:cornerRadius="8dp"
         app:icon="@drawable/ic_google"
         app:iconGravity="textStart"
@@ -236,7 +200,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnRegister" />
 
-    <!-- Đã có tài khoản? Đăng nhập -->
+    <!-- Login Redirect -->
     <TextView
         android:id="@+id/tvLoginRedirect"
         android:layout_width="wrap_content"
@@ -248,5 +212,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

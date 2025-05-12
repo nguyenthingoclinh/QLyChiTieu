@@ -16,4 +16,46 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
+
+    <!-- Style cho icon và text error -->
+    <style name="ErrorTextStyle" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/error_color</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <!-- Tùy chỉnh màu cho password toggle -->
+    <style name="PasswordToggleStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="endIconTint">@color/black</item>
+        <item name="errorIconTint">@color/error_color</item>
+    </style>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:background">@null</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="boxBackgroundMode">none</item>
+        <item name="boxCollapsedPaddingTop">0dp</item>
+        <item name="android:textColorHint">@color/hint_color</item>
+        <item name="hintTextColor">@color/hint_color</item>
+        <!-- Màu cho password toggle -->
+        <item name="endIconTint">@color/black</item>
+        <item name="passwordToggleTint">@color/black</item>
+    </style>
+
+    <style name="CustomTextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:background">@drawable/input_bottom_line</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="CalendarHeaderText">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

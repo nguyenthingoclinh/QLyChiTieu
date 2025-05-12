@@ -2,10 +2,8 @@ package com.nhom08.qlychitieu.giao_dien.giao_dich;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -21,8 +19,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.tabs.TabLayout;
 import com.nhom08.qlychitieu.MyApplication;
@@ -33,6 +29,7 @@ import com.nhom08.qlychitieu.databinding.ItemCategoryTransactionBinding;
 import com.nhom08.qlychitieu.mo_hinh.Category;
 import com.nhom08.qlychitieu.mo_hinh.Transaction;
 import com.nhom08.qlychitieu.tien_ich.CalculatorHandler;
+import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.tien_ich.ImageUtils;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
 
@@ -48,18 +45,15 @@ import java.util.concurrent.Executors;
 
 public class AddTransactionActivity extends AppCompatActivity {
     private static final String TAG = AddTransactionActivity.class.getSimpleName();
-
     private ActivityAddTransactionBinding binding;
     private ImageUtils imageUtils;
     private MessageUtils messageUtils;
     private CalculatorHandler calculatorHandler;
     private CategoryAdapter categoryAdapter;
     private AppDatabase database;
-    private SharedPreferences sharedPreferences;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Category selectedCategory;
-    private long selectedDate;
+    private long selectedDate = System.currentTimeMillis();
     private String imagePath = "";
     private int userId;
     private ActivityResultLauncher<Intent> pickImageLauncher;
@@ -69,52 +63,32 @@ public class AddTransactionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // Set up status bar color
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-        // Set dark icons on status bar
-        View decorView = window.getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-
-        // Initialize ViewBinding
         binding = ActivityAddTransactionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            v.setPadding(
-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).right,
-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
-            return insets;
-        });
+        initializeComponents();
+        setupViews();
+        updateDateDisplay(new Date(selectedDate));
+        loadCategories(Constants.CATEGORY_TYPE_EXPENSE); // Load default categories
+    }
+    private void initializeComponents() {
+        MyApplication app = MyApplication.getInstance();
+        database = app.getDatabase();
+        userId = app.getCurrentUserId();
+        executorService = app.getExecutorService();
 
-        // Initialize utils
         imageUtils = new ImageUtils(this);
         messageUtils = new MessageUtils(this);
         calculatorHandler = new CalculatorHandler();
 
-        // Initialize database and preferences
-        database = ((MyApplication) getApplication()).getDatabase();
-        sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-
-        setupViews();
+        // Initialize adapters and setup UI components
         setupImagePicker();
         setupCalculator();
         setupDatePicker();
         setupCategoryAdapter();
-        fetchUserAndLoadCategories();
     }
 
     private void setupViews() {
-        // Setup toolbar
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
         // Setup click listeners
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnSave.setOnClickListener(v -> saveTransaction());
@@ -246,7 +220,8 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void updateAmountDisplay() {
-        binding.tvAmount.setText(calculatorHandler.getCurrentInput());
+        String amount = calculatorHandler.getCurrentInput();
+        binding.tvAmount.setText(amount.isEmpty() ? "0" : amount);
     }
 
     private void handleImageResult(Uri imageUri) {
@@ -258,47 +233,19 @@ public class AddTransactionActivity extends AppCompatActivity {
             binding.ivReceipt.setImageURI(Uri.fromFile(new File(savedPath)));
             binding.ivReceipt.setVisibility(View.VISIBLE);
             binding.tvAttachPhoto.setText(R.string.photo_attached);
-            hideAddPhotoIcon();
+            // Thay đổi icon thay vì ẩn nó
+            binding.tvIconAddPhoto.setText(R.string.icon_camera_added);
         } else {
             messageUtils.showError(R.string.error_saving_image);
         }
     }
 
-    private void hideAddPhotoIcon() {
-        View iconView = binding.layoutAddPhoto.findViewById(R.id.tvIconAddPhoto);
-        if (iconView != null) {
-            iconView.setVisibility(View.GONE);
-        }
-    }
-
-    private void showAddPhotoIcon() {
-        View iconView = binding.layoutAddPhoto.findViewById(R.id.tvIconAddPhoto);
-        if (iconView != null) {
-            iconView.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void updateDateDisplay(Date date) {
-        String formattedDate = new SimpleDateFormat("dd/MM/yyyy",
-                Locale.getDefault()).format(date);
+        String formattedDate = new SimpleDateFormat(
+                Constants.DEFAULT_DATE_FORMAT,
+                Locale.getDefault()
+        ).format(date);
         binding.tvDate.setText(formattedDate);
-    }
-
-    private void fetchUserAndLoadCategories() {
-        executorService.execute(() -> {
-            try {
-                String email = sharedPreferences.getString("loggedInEmail", null);
-                if (email == null) {
-                    Log.e(TAG, "No logged-in user found");
-                    return;
-                }
-
-                userId = database.userDao().getUserByEmail(email).getUserId();
-                runOnUiThread(() -> loadCategories("Expense"));
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching user: " + e.getMessage());
-            }
-        });
     }
 
     private void loadCategories(String type) {
@@ -316,8 +263,11 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void updateCategoryList(List<Category> categories) {
-        categoryAdapter.updateCategories(categories);
+        if (categoryAdapter == null) return;
 
+        categoryAdapter.updateCategories(categories != null ? categories : new ArrayList<>());
+
+        assert categories != null;
         if (categories.isEmpty()) {
             binding.tvNoCategories.setVisibility(View.VISIBLE);
             binding.gridCategories.setVisibility(View.GONE);
@@ -327,7 +277,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private void saveTransaction() {
+    private void saveTransaction(){
+
         if (!validateInputs()) return;
 
         try {
@@ -337,8 +288,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 return;
             }
 
-            // Adjust amount based on transaction type
-            if (selectedCategory.getType().equals("Expense")) {
+            if (Constants.CATEGORY_TYPE_EXPENSE.equals(selectedCategory.getType())) {
                 amount = -Math.abs(amount);
             }
 
@@ -399,15 +349,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         imagePath = "";
         binding.ivReceipt.setVisibility(View.GONE);
         binding.tvAttachPhoto.setText(R.string.attach_photo);
-        showAddPhotoIcon();
+        // Reset về icon ban đầu
+        binding.tvIconAddPhoto.setText(R.string.icon_add_a_photo);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!executorService.isShutdown()) {
-            executorService.shutdown();
-        }
         binding = null;
     }
 

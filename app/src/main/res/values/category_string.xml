@@ -32,4 +32,5 @@
     <string name="category_added_successfully">Thêm danh mục thành công</string>
     <string name="category_updated_successfully">Cập nhật danh mục thành công</string>
     <string name="error_updating_category">Lỗi khi cập nhật danh mục</string>
+    <string name="error_no_icon_selected">Không có icon được chọn</string>
 </resources>

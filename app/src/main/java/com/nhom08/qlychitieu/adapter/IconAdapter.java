@@ -39,8 +39,17 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
         if (position != -1) {
             int oldSelected = selectedPosition;
             selectedPosition = position;
-            notifyItemChanged(oldSelected);
+            if (oldSelected != -1) {
+                notifyItemChanged(oldSelected);
+            }
             notifyItemChanged(selectedPosition);
+        }
+    }
+    public void clearSelection() {
+        if (selectedPosition != -1) {
+            int oldPosition = selectedPosition;
+            selectedPosition = -1;
+            notifyItemChanged(oldPosition);
         }
     }
 
@@ -61,6 +70,11 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
     public int getItemCount() {
         return icons.size();
     }
+    public String getSelectedIcon() {
+        return selectedPosition >= 0 && selectedPosition < icons.size()
+                ? icons.get(selectedPosition)
+                : null;
+    }
 
     class IconViewHolder extends RecyclerView.ViewHolder {
         TextView iconView;
@@ -68,26 +82,24 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.IconViewHolder
         IconViewHolder(@NonNull View itemView) {
             super(itemView);
             iconView = itemView.findViewById(R.id.tvIcon);
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    int oldSelected = selectedPosition;
+                    selectedPosition = position;
+                    if (oldSelected != -1) {
+                        notifyItemChanged(oldSelected);
+                    }
+                    notifyItemChanged(selectedPosition);
+                    listener.onIconSelected(icons.get(position));
+                }
+            });
         }
 
         void bind(String icon, boolean isSelected) {
             iconView.setText(icon);
             iconView.setSelected(isSelected);
-
-            itemView.setOnClickListener(v -> {
-                int oldSelected = selectedPosition;
-                selectedPosition = getAdapterPosition();
-                notifyItemChanged(oldSelected);
-                notifyItemChanged(selectedPosition);
-                listener.onIconSelected(icon);
-            });
         }
-    }
-
-    // Thêm phương thức để lấy icon đã chọn
-    public String getSelectedIcon() {
-        return selectedPosition >= 0 && selectedPosition < icons.size()
-                ? icons.get(selectedPosition)
-                : null;
     }
 }

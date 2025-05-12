@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_account_not_exist">Tài khoản không tồn tại</string>
+    <string name="error_wrong_password">Sai mật khẩu</string>
+    <string name="error_login_failed">Lỗi đăng nhập</string>
+    <string name="error_empty_email">Vui lòng nhập email</string>
+    <string name="error_empty_password">Vui lòng nhập mật khẩu</string>
+    <string name="error_need_register">Chưa có tài khoản, vui lòng đăng ký</string>
+    <string name="error_google_auth">Lỗi xác thực tài khoản Google</string>
+    <string name="error_google_info">Lỗi xử lý thông tin Google</string>
+    <string name="login_success">Đăng nhập thành công</string>
+    <string name="feature_in_development">Tính năng đang được phát triển</string>
+</resources>

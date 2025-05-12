@@ -52,7 +52,9 @@ dependencies {
     implementation libs.firebase.auth
     implementation libs.bcrypt
     implementation libs.fragment
-    implementation libs.lifecycle.runtime.ktx
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.lifecycle.livedata
+    implementation libs.androidx.lifecycle.runtime
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
