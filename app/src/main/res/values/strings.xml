@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Quản lý chi tiêu</string>
+    <string name="error_user_not_found">Không tìm thấy tài khoản</string>
+    <string name="logo">logo</string>
+
 
     <!-- Đăng nhập -->
     <string name="login_title">Đăng nhập</string>
@@ -29,6 +32,8 @@
 
     <string name="expense">Chi tiêu</string>
     <string name="income">Thu nhập</string>
+    <string name="expense_detail">Chi tiết chi tiêu</string>
+    <string name="income_detail">Chi tiết thu nhập</string>
     <string name="balance">Số dư</string>
     <string name="date_format">%d/%d/%d</string>
     <string name="photo_attached">Photo Attached</string>

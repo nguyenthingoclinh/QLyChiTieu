@@ -56,6 +56,6 @@ public interface TransactionDAO {
         public double totalExpense;
     }
 
-    @Query("SELECT * FROM transactions WHERE userId = :userId AND date BETWEEN :startTime AND :endTime")
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND date BETWEEN :startTime AND :endTime ORDER BY date DESC")
     LiveData<List<Transaction>> getTransactionsByDateRangeLive(int userId, long startTime, long endTime);
 }

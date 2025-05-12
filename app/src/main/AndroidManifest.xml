@@ -18,7 +18,8 @@
             android:exported="false" />
         <activity
             android:name=".giao_dien.giao_dich.AddTransactionActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".giao_dien.nguoi_dung.SignUpActivity"
             android:exported="false" />

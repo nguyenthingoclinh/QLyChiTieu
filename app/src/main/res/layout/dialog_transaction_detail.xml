@@ -9,8 +9,8 @@
         android:id="@+id/tvDialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Chi tiết giao dịch"
-        android:textSize="20sp"
+        android:text="@string/transaction_detail_title"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
@@ -23,14 +23,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loại:"
-            android:textStyle="bold"/>
+            android:text="@string/type_view"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tvDialogCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -42,14 +44,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Số tiền:"
-            android:textStyle="bold"/>
+            android:text="@string/amount_view"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tvDialogAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -61,33 +65,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ngày:"
-            android:textStyle="bold"/>
+            android:text="@string/date_view"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tvDialogDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_marginBottom="8dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ghi chú:"
-            android:textStyle="bold"/>
+            android:text="@string/note_view"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/tvDialogNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginStart="8dp"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <ImageView
@@ -96,15 +104,34 @@
         android:layout_height="200dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/receipt_image"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
 
-
-    <Button
-        android:id="@+id/btnClose"
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đóng"
-        android:layout_gravity="end"/>
+        android:orientation="horizontal"
+        android:layout_gravity="end">
+
+        <Button
+            android:id="@+id/btnDelete"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:padding="16dp"/>
+
+        <Button
+            android:id="@+id/btnClose"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:padding="16dp"
+            android:layout_marginStart="16dp"/>
+
+    </LinearLayout>
+
 </LinearLayout>

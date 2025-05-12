@@ -2,4 +2,12 @@
 <resources>
     <string name="home_fragment_title">Sổ Thu Chi</string>
     <string name="calendar_description">Biểu tượng lịch</string>
+    <string name="calendar">Lịch</string>
+    <string name="error_search">Lỗi tìm kiếm</string>
+    <string name="error_load_transactions">Lỗi tải dữ liệu giao dịch</string>
+    <string name="transaction_detail_title">Chi tiết giao dịch</string>
+    <string name="type_view">Loại: </string>
+    <string name="amount_view">Số tiền: </string>
+    <string name="date_view">Ngày: </string>
+    <string name="note_view">Ghi chú: </string>
 </resources>

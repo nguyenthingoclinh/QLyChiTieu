@@ -12,20 +12,21 @@
     <string name="text_sign_up">Đăng ký</string>
 
     <!-- Error Messages -->
-    <string name="error_email_required">Vui lòng nhập email</string>
+    <string name="error_db_init">Không thể khởi tạo cơ sở dữ liệu</string>
+    <string name="error_empty_fullname">Vui lòng nhập họ tên</string>
     <string name="error_invalid_email">Email không hợp lệ</string>
-    <string name="error_password_required">Vui lòng nhập mật khẩu</string>
-    <string name="error_password_too_short">Mật khẩu phải có ít nhất 6 ký tự</string>
-    <string name="error_user_not_found">Tài khoản không tồn tại</string>
-    <string name="error_invalid_credentials">Email hoặc mật khẩu không đúng</string>
-    <string name="error_sign_in_failed">Đăng nhập thất bại. Vui lòng thử lại</string>
-    <string name="error_google_sign_in_failed">Đăng nhập Google thất bại</string>
-    <string name="error_database_error">Lỗi kết nối cơ sở dữ liệu</string>
-    <string name="error_create_user_failed">Tạo tài khoản thất bại</string>
-    <string name="error_email_exists">Email này đã được sử dụng</string>
-    <string name="error_registration_failed">Đăng ký thất bại</string>
-    <string name="error_fullname_required">Vui lòng nhập họ tên</string>
-    <string name="error_password_not_match">Mật khẩu xác nhận không khớp</string>
+    <string name="error_invalid_password_format">Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa và 1 chữ số</string>
+    <string name="error_password_mismatch">Mật khẩu không khớp</string>
+    <string name="error_email_exists">Email đã tồn tại</string>
+    <string name="signup_success">Đăng ký thành công</string>
+    <string name="error_registration_failed">Đã xảy ra lỗi khi đăng ký</string>
+    <string name="error_google_signin">Lỗi khi đăng nhập bằng Google</string>
+    <string name="error_invalid_google_credential">Không nhận được thông tin Google hợp lệ</string>
+    <string name="error_user_info">Không thể lấy thông tin người dùng</string>
+    <string name="error_auth_failed">Xác thực thất bại</string>
+    <string name="error_google_signin_process">Lỗi xử lý đăng nhập Google</string>
+    <string name="error_google_account_exists">Tài khoản Google này đã được đăng ký</string>
+    <string name="error_save_user">Lỗi khi lưu thông tin người dùng</string>
 
     <!-- Loading Dialog -->
     <string name="text_loading">Đang tải…</string>
