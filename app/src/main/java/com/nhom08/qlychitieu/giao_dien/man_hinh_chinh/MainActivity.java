@@ -1,13 +1,11 @@
 package com.nhom08.qlychitieu.giao_dien.man_hinh_chinh;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.SparseArray;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
@@ -16,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.databinding.ActivityMainBinding;
-import com.nhom08.qlychitieu.main_fragment.CharFragment;
+import com.nhom08.qlychitieu.main_fragment.ChartFragment;
 import com.nhom08.qlychitieu.main_fragment.HomeFragment;
 import com.nhom08.qlychitieu.main_fragment.PersonFragment;
 import com.nhom08.qlychitieu.main_fragment.ReportFragment;
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Khởi tạo ánh xạ ID với Fragment
         fragmentMap.put(R.id.menu_home, HomeFragment::new);
-        fragmentMap.put(R.id.menu_char, CharFragment::new);
+        fragmentMap.put(R.id.menu_char, ChartFragment::new);
         fragmentMap.put(R.id.menu_report, ReportFragment::new);
         fragmentMap.put(R.id.menu_person, PersonFragment::new);
 
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             Fragment current = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
             if (current instanceof HomeFragment) {
                 binding.bottomNavigationView.setSelectedItemId(R.id.menu_home);
-            } else if (current instanceof CharFragment) {
+            } else if (current instanceof ChartFragment) {
                 binding.bottomNavigationView.setSelectedItemId(R.id.menu_char);
             } else if (current instanceof ReportFragment) {
                 binding.bottomNavigationView.setSelectedItemId(R.id.menu_report);

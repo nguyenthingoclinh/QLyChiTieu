@@ -31,4 +31,7 @@ public class MessageUtils {
     public void showInfo(@StringRes int messageId) {
         Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
     }
+    public void showInfo(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
 }
