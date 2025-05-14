@@ -37,4 +37,6 @@
     <string name="balance">Số dư</string>
     <string name="date_format">%d/%d/%d</string>
     <string name="photo_attached">Photo Attached</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
