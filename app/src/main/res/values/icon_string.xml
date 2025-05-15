@@ -103,6 +103,7 @@
     <!-- Icon cho Profile và các mục menu -->
     <string name="icon_person">\uE7FD</string> <!-- Hồ sơ (Profile) -->
     <string name="icon_settings">\uE8B8</string> <!-- Cài đặt -->
+    <string name="icon_category_setting">\ue574</string>
     <string name="icon_account_bank">\uE850</string> <!-- Tài khoản -->
     <string name="icon_budget">\uE84F</string> <!-- Ngân sách -->
     <string name="icon_export">\uE2C4</string> <!-- Xuất dữ liệu -->

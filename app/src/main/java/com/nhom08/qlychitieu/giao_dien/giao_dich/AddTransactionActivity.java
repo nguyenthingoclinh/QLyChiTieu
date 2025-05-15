@@ -10,15 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.tabs.TabLayout;
 import com.nhom08.qlychitieu.MyApplication;
@@ -294,8 +291,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             final Transaction transaction = new Transaction(
                     userId,
-                    selectedCategory.getCategoryId(),
-                    null, // accountId
+                    selectedCategory.getCategoryId(),// accountId
                     amount,
                     selectedDate != 0 ? selectedDate : System.currentTimeMillis(),
                     binding.etDescription.getText().toString().trim(),

@@ -6,6 +6,10 @@ import androidx.room.Room;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.mo_hinh.User;
 import com.nhom08.qlychitieu.tien_ich.Constants;
+import com.nhom08.qlychitieu.tien_ich.FormatUtils;
+import com.nhom08.qlychitieu.tien_ich.NotificationHelper;
+import com.nhom08.qlychitieu.tien_ich.ThemeUtils;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,14 +33,44 @@ public class MyApplication extends Application {
         // Khởi tạo SharedPreferences
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
+        // Khởi tạo channel thông báo
+        NotificationHelper.createNotificationChannel(this);
+
+        // Áp dụng theme
+        ThemeUtils.applyTheme(this);
+
+        // Khởi tạo các cài đặt định dạng mặc định
+        initDefaultFormats();
+
         // Khởi tạo Room Database
         database = Room.databaseBuilder(this,
                         AppDatabase.class, "qly_chi_tieu_db")
                 .addMigrations(AppDatabase.MIGRATION_1_2)
+                .addMigrations(AppDatabase.MIGRATION_2_3)
                 .build();
 
         // Khôi phục phiên đăng nhập
         restoreUserSession();
+    }
+
+    /**
+     * Khởi tạo các cài đặt định dạng mặc định
+     */
+    private void initDefaultFormats() {
+        // Kiểm tra và khởi tạo định dạng tiền tệ mặc định
+        SharedPreferences formatPrefs = getSharedPreferences(FormatUtils.FORMAT_PREFS, MODE_PRIVATE);
+
+        if (!formatPrefs.contains(FormatUtils.KEY_CURRENCY_CODE)) {
+            formatPrefs.edit().putString(FormatUtils.KEY_CURRENCY_CODE, "VND").apply();
+        }
+
+        if (!formatPrefs.contains(FormatUtils.KEY_NUMBER_FORMAT_STYLE)) {
+            formatPrefs.edit().putInt(FormatUtils.KEY_NUMBER_FORMAT_STYLE, FormatUtils.FORMAT_STYLE_US).apply();
+        }
+
+        if (!formatPrefs.contains(FormatUtils.KEY_LOCALE_CODE)) {
+            formatPrefs.edit().putString(FormatUtils.KEY_LOCALE_CODE, "vi").apply();
+        }
     }
 
     private void restoreUserSession() {

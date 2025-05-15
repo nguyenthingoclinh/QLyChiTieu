@@ -29,9 +29,7 @@ public class Constants {
     public static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     // Default Values
-    public static final String DEFAULT_CURRENCY = "VND";
     public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
-    public static final String DEFAULT_TIME_FORMAT = "HH:mm";
 
-
+    public static final int REQUEST_NOTIFICATION_PERMISSION_CODE = 123;
 }
