@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".giao_dien.SettingActivity">
+
+    <FrameLayout
+        android:id="@+id/yellowHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:fontFamily="@font/material_icons_outlined"
+            android:text="@string/icon_arrow_back"
+            android:textSize="32sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:text="Cài đặt hiển thị"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <!-- Main Settings Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/yellowHeader"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- SECTION 1: THEME -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Giao diện ứng dụng"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroupTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <RadioButton
+                    android:id="@+id/radioSystemDefault"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:text="Theo cài đặt hệ thống" />
+
+                <RadioButton
+                    android:id="@+id/radioLightTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:text="Giao diện sáng" />
+
+                <RadioButton
+                    android:id="@+id/radioDarkTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:text="Giao diện tối" />
+            </RadioGroup>
+
+            <!-- SECTION 2: CURRENCY -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đơn vị tiền tệ"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerCurrency"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- SECTION 3: NUMBER FORMAT -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Định dạng số"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroupNumberFormat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <RadioButton
+                    android:id="@+id/radioFormatUS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:text="1,234.56 (US)" />
+
+                <RadioButton
+                    android:id="@+id/radioFormatEU"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:text="1.234,56 (EU)" />
+
+                <RadioButton
+                    android:id="@+id/radioFormatCompact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:text="Rút gọn (1K, 1M)" />
+            </RadioGroup>
+
+            <!-- PREVIEW SECTION -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Xem trước"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/textPreviewSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1,234.56 VND"
+                android:textSize="16sp"
+                android:paddingVertical="4dp"/>
+
+            <TextView
+                android:id="@+id/textPreviewMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="123,456.78 VND"
+                android:textSize="18sp"
+                android:paddingVertical="4dp"/>
+
+            <TextView
+                android:id="@+id/textPreviewLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1,234,567.89 VND"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingVertical="4dp"
+                android:layout_marginBottom="24dp"/>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
