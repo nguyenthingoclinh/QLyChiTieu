@@ -37,4 +37,15 @@ public class DateTimeUtils {
         return String.format(VI_LOCALE, "Thg %d",
                 calendar.get(Calendar.MONTH) + 1);
     }
+
+    /**
+     * Format tháng/năm dạng ngắn gọn (VD: T1/23)
+     * @param calendar Đối tượng Calendar chứa thông tin tháng năm cần định dạng
+     * @return Chuỗi đại diện cho tháng/năm dạng ngắn gọn (Ví dụ: "T1/23")
+     */
+    public static String formatMonthYearShort(Calendar calendar) {
+        return String.format(VI_LOCALE, "T%d/%02d",
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.YEAR) % 100);
+    }
 }

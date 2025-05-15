@@ -1,155 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true">
 
-    <!-- Header -->
-    <RelativeLayout
+    <!-- Header vàng kéo dài lên status bar -->
+    <FrameLayout
+        android:id="@+id/yellowHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/btnBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:fontFamily="@font/material_icons_outlined"
-            android:text="@string/icon_arrow_back"
-            android:textSize="32sp"
-            android:contentDescription="Back"/>
-
-        <!-- Header Toggle Layout với Spinner cho Thu nhập/Chi tiêu -->
-        <LinearLayout
-            android:id="@+id/headerToggleLayout"
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackground"
-            android:padding="8dp">
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:text="@string/chart"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
 
-            <Spinner
-                android:id="@+id/spinner_category"
+    <!-- Bộ lọc thời gian và tablayout -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="4dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@+id/yellowHeader">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:id="@+id/layoutDateFilter"
                 android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/btnPrevMonth"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/chart_btnPrevMonth"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvMonthYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:text="@string/chart_month"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnNextMonth"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/chart_btnNextMonth"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/categories"
-                android:background="@android:color/transparent"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/layoutDateFilter"
+                app:tabGravity="fill"
+                app:tabMode="fixed">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/expense" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/income" />
+            </com.google.android.material.tabs.TabLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Container cho nội dung còn lại với nền trắng -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardHeader">
+
+        <!-- Biểu đồ -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerViewCategories"
+            app:layout_constraintHeight_percent="0.4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvChartTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/chart_expense"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="114dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_weight="1" />
+
+                <!-- Thêm vào layout của bạn, ngay sau PieChart -->
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <RadioGroup
+                    android:id="@+id/chartTypeRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp">
+
+                    <RadioButton
+                        android:id="@+id/radioPieChart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_category"
+                        android:checked="true" />
+
+                    <RadioButton
+                        android:id="@+id/radioBarChart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_day"
+                        android:layout_marginStart="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/radioLineChart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_trend"
+                        android:layout_marginStart="16dp" />
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Thông tin tổng chi tiêu/thu nhập -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerViewCategories"
+            app:layout_constraintTop_toBottomOf="@+id/cardChart">
 
             <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chi tiêu"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </RelativeLayout>
+                android:id="@+id/tvTotal"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="@string/chart_total_expense"
+                android:textColor="@color/expense_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
-    <!-- TabLayout cho Tháng và Năm -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:tabGravity="fill"
-        app:tabMode="fixed"
-        app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium">
+        <!-- Danh sách phân loại -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCategories"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTotal"
+            tools:listitem="@layout/item_chart_category" />
 
-        <com.google.android.material.tabs.TabItem
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tháng" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Năm" />
-    </com.google.android.material.tabs.TabLayout>
-
-    <!-- Bộ lọc thời gian (Tháng/Năm hiện tại và nút điều hướng) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:paddingHorizontal="16dp">
-
-        <ImageButton
-            android:id="@+id/btn_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_media_previous"
-            android:background="@android:color/transparent"
-            android:contentDescription="Previous"/>
-
+        <!-- Thông báo không có dữ liệu -->
         <TextView
-            android:id="@+id/tv_current_time"
+            android:id="@+id/tvNoData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thg 3 2025"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"/>
+            android:text="@string/no_data"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardTotal" />
 
-        <ImageButton
-            android:id="@+id/btn_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_media_next"
-            android:background="@android:color/transparent"
-            android:contentDescription="Next"/>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ViewPager chứa các biểu đồ -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/chart_view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="16dp"/>
-
-    <!-- TabLayout cho dấu chấm chỉ báo -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/chart_tab_dots"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:tabGravity="center"
-        app:tabMode="fixed"
-        app:tabIndicatorHeight="0dp"
-        app:tabBackground="@android:color/transparent"/>
-
-    <!-- Trung bình (chỉ hiển thị cho biểu đồ đường) -->
-    <TextView
-        android:id="@+id/tv_average_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trung bình: 24.193,55"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:paddingHorizontal="16dp"
-        android:visibility="gone"/>
-
-    <!-- Danh sách chi tiết bằng RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_expense_items"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="16dp"
-        android:nestedScrollingEnabled="false"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

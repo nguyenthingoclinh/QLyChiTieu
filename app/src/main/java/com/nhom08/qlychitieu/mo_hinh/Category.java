@@ -19,7 +19,6 @@ import androidx.room.PrimaryKey;
 public class Category {
     @PrimaryKey(autoGenerate = true)
     private int categoryId;
-
     private int userId;
     private String name;
     private String type;  // "Expense" hoặc "Income"

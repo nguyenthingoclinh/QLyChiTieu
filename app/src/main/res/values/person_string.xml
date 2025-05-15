@@ -4,8 +4,6 @@
     <string name="username">Tên người dùng</string>
     <string name="user_gmail">admin@gmail.com</string>
     <string name="profile">Hồ sơ</string>
-    <string name="accountBank">Tài khoản ngân hàng</string>
-    <string name="budget">Ngân sách</string>
     <string name="export_data">Xuất dữ liệu</string>
     <string name="categorySetting">Cài đặt danh mục</string>
     <string name="logout">Đăng xuất</string>
@@ -13,15 +11,11 @@
     <string name="avatar">Avatar</string>
     <string name="menu_icon">Menu</string>
     <string name="arrow_right">Mũi tên</string>
-    <string name="feature_account">Tính năng quản lý tài khoản đang được phát triển</string>
-    <string name="feature_budget">Tính năng quản lý ngân sách đang được phát triển</string>
     <string name="feature_export">Tính năng xuất dữ liệu đang được phát triển</string>
     <string name="error_logout">Lỗi đăng xuất tài khoản</string>
     <string name="success_logout">Đăng xuất thành công</string>
     <!-- Menu Items -->
     <string name="menu_category">Quản lý danh mục</string>
-    <string name="menu_account">Tài khoản</string>
-    <string name="menu_budget">Ngân sách</string>
     <string name="menu_export">Xuất dữ liệu</string>
     <string name="menu_logout">Đăng xuất</string>
 </resources>
