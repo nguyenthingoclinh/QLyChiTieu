@@ -51,10 +51,6 @@ public class PersonFragment extends Fragment {
     private void setupViews() {
         // Menu items click listeners
         binding.menuCategorySetting.setOnClickListener(v -> openCategorySettings());
-        binding.menuAccount.setOnClickListener(v ->
-                showFeatureInDevelopment(R.string.feature_account));
-        binding.menuBudget.setOnClickListener(v ->
-                showFeatureInDevelopment(R.string.feature_budget));
         binding.menuExport.setOnClickListener(v ->
                 showFeatureInDevelopment(R.string.feature_export));
         binding.menuLogout.setOnClickListener(v -> handleLogout());

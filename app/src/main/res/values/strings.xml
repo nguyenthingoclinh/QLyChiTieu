@@ -3,7 +3,6 @@
     <string name="error_user_not_found">Không tìm thấy tài khoản</string>
     <string name="logo">logo</string>
 
-
     <!-- Đăng nhập -->
     <string name="login_title">Đăng nhập</string>
     <string name="username_hint">Email</string>
@@ -27,16 +26,13 @@
     <string name="menu_person">Tôi</string>
     <string name="menu_add">Thêm</string>
     <string name="add_new">Thêm mới giao dịch</string>
-
     <string name="add">Thêm</string>
-
     <string name="expense">Chi tiêu</string>
     <string name="income">Thu nhập</string>
     <string name="expense_detail">Chi tiết chi tiêu</string>
     <string name="income_detail">Chi tiết thu nhập</string>
     <string name="balance">Số dư</string>
     <string name="date_format">%d/%d/%d</string>
-    <string name="photo_attached">Photo Attached</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="no_data">Không có dữ liệu</string>
 </resources>

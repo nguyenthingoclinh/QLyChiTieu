@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chart">Thống kê</string>
+    <string name="chart_expense">Biểu đồ chi tiêu</string>
+    <string name="chart_total_expense">Tổng chi tiêu: 0</string>\
+    <string name="chart_btnNextMonth">Thg 6 2025</string>
+    <string name="chart_btnPrevMonth">Thg 4 2025</string>
+    <string name="chart_month">Thg 5 2025</string>
+    <string name="chart_trend">Xu hướng</string>
+    <string name="chart_day">Theo ngày</string>
+    <string name="chart_category">Danh mục</string>
+
+</resources>
