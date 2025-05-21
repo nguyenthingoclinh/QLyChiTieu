@@ -8,7 +8,7 @@
     android:fillViewport="true"
     android:fitsSystemWindows="false"
     android:background="@android:color/transparent"
-    tools:context=".main_fragment.PersonFragment">
+    tools:context=".giao_dien.man_hinh_chinh.PersonFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

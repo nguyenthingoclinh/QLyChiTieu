@@ -7,7 +7,6 @@ import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.mo_hinh.User;
 import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.tien_ich.FormatUtils;
-import com.nhom08.qlychitieu.tien_ich.NotificationHelper;
 import com.nhom08.qlychitieu.tien_ich.ThemeUtils;
 
 import java.util.concurrent.ExecutorService;

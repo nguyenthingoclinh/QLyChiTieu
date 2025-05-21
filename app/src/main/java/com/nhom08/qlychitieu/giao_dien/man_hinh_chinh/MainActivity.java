@@ -22,12 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.nhom08.qlychitieu.R;
 import com.nhom08.qlychitieu.databinding.ActivityMainBinding;
-import com.nhom08.qlychitieu.main_fragment.ChartFragment;
-import com.nhom08.qlychitieu.main_fragment.HomeFragment;
-import com.nhom08.qlychitieu.main_fragment.PersonFragment;
-import com.nhom08.qlychitieu.main_fragment.ReportFragment;
 import com.nhom08.qlychitieu.giao_dien.giao_dich.AddTransactionActivity;
-import com.nhom08.qlychitieu.tien_ich.NotificationHelper;
 import com.nhom08.qlychitieu.tien_ich.ThemeUtils;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
 import java.util.function.Supplier;

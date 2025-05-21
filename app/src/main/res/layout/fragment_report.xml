@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     android:background="@android:color/transparent"
-    tools:context=".main_fragment.ReportFragment">
+    tools:context=".giao_dien.man_hinh_chinh.ReportFragment">
 
     <TextView
         android:layout_width="match_parent"

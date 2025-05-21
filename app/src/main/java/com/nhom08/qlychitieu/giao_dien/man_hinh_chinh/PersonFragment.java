@@ -1,4 +1,4 @@
-package com.nhom08.qlychitieu.main_fragment;
+package com.nhom08.qlychitieu.giao_dien.man_hinh_chinh;
 
 import android.content.Intent;
 import android.os.Bundle;

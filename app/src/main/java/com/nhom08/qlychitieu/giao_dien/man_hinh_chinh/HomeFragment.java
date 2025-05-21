@@ -1,4 +1,4 @@
-package com.nhom08.qlychitieu.main_fragment;
+package com.nhom08.qlychitieu.giao_dien.man_hinh_chinh;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +16,6 @@ import com.nhom08.qlychitieu.adapter.TransactionAdapter;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.databinding.FragmentHomeBinding;
 import com.nhom08.qlychitieu.dialog.MonthYearPickerDialog;
-import com.nhom08.qlychitieu.giao_dien.man_hinh_chinh.CalendarFragment;
-import com.nhom08.qlychitieu.giao_dien.man_hinh_chinh.TotalBalanceFragment;
 import com.nhom08.qlychitieu.mo_hinh.Category;
 import com.nhom08.qlychitieu.mo_hinh.DailyTransaction;
 import com.nhom08.qlychitieu.mo_hinh.Transaction;
@@ -38,7 +36,6 @@ public class HomeFragment extends Fragment {
     private MyApplication myApp;
     private AppDatabase database;
     private ExecutorService executorService;
-
     private final List<Transaction> transactionList = new ArrayList<>();
     private final List<Transaction> originalTransactionList = new ArrayList<>();
     private TransactionAdapter transactionAdapter;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_settings">Cài đặt thông báo</string>
+    <string name="alert_edit_title">Chỉnh sửa cảnh báo</string>
+    <string name="alert_add_title">Thêm cảnh báo mới</string>
+    <string name="error_empty_title">Vui lòng nhập tiêu đề cảnh báo</string>
+    <string name="error_empty_threshold">Vui lòng nhập ngưỡng chi tiêu</string>
+    <string name="error_invalid_threshold">Ngưỡng chi tiêu không hợp lệ</string>
+    <string name="notification_enabled">Đã bật thông báo chi tiêu</string>
+    <string name="notification_disabled">Đã tắt thông báo chi tiêu</string>
+    <string name="alert_updated">Đã cập nhật cảnh báo</string>
+    <string name="alert_added">Đã thêm cảnh báo mới</string>
+    <string name="alert_deleted">Đã xóa cảnh báo</string>
+    <string name="confirm_delete_title">Xác nhận xóa</string>
+    <string name="confirm_delete_message">Bạn có chắc chắn muốn xóa cảnh báo này?</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="action_save">Lưu</string>
+    <string name="empty_alerts">Chưa có cảnh báo nào. Hãy thêm cảnh báo mới!</string>
+    <string name="notification_time_set">Đã đặt giờ thông báo: %s</string>
+    <string name="time_format">%02d:%02d</string>
+</resources>
