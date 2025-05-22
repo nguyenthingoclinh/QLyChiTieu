@@ -28,29 +28,58 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
+/**
+ * Fragment chính hiển thị màn hình chính của ứng dụng.
+ * Hiển thị danh sách giao dịch theo tháng, tổng chi tiêu, thu nhập và số dư.
+ */
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
+    // View binding cho truy cập các thành phần giao diện
     private FragmentHomeBinding binding;
+
+    // Tiện ích hiển thị thông báo
     private MessageUtils messageUtils;
+
+    // Application instance
     private MyApplication myApp;
+
+    // Đối tượng truy cập cơ sở dữ liệu
     private AppDatabase database;
+
+    // Thực thi các tác vụ bất đồng bộ
     private ExecutorService executorService;
+
+    // Danh sách giao dịch hiện tại
     private final List<Transaction> transactionList = new ArrayList<>();
+
+    // Danh sách gốc để khôi phục khi reset tìm kiếm
     private final List<Transaction> originalTransactionList = new ArrayList<>();
+
+    // Adapter hiển thị danh sách giao dịch
     private TransactionAdapter transactionAdapter;
+
+    // Danh sách tất cả các danh mục
     private List<Category> categories = new ArrayList<>();
+
+    // Lịch để theo dõi tháng hiện tại đang hiển thị
     private Calendar currentCalendar;
 
+    /**
+     * Tạo và trả về view cho fragment
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        init();
-        setupViews();
+        khoiTao();
+        thietLapGiaoDien();
         return binding.getRoot();
     }
 
-    private void init() {
+    /**
+     * Khởi tạo các thành phần cần thiết cho fragment
+     */
+    private void khoiTao() {
         myApp = (MyApplication) requireActivity().getApplication();
         database = myApp.getDatabase();
         executorService = myApp.getExecutorService();
@@ -58,8 +87,11 @@ public class HomeFragment extends Fragment {
         currentCalendar = Calendar.getInstance();
     }
 
-    private void setupViews() {
-        // RecyclerView
+    /**
+     * Thiết lập giao diện và các sự kiện người dùng
+     */
+    private void thietLapGiaoDien() {
+        // Thiết lập RecyclerView
         transactionAdapter = new TransactionAdapter(requireContext());
         binding.recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewTransactions.setAdapter(transactionAdapter);
@@ -70,51 +102,52 @@ public class HomeFragment extends Fragment {
             });
         });
 
-        // Search
+        // Thiết lập thanh tìm kiếm
         binding.searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                performSearch(query);
+                timKiem(query);
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) resetToOriginalList();
-                else performSearch(newText);
+                if (newText.isEmpty()) khoiPhucDanhSachGoc();
+                else timKiem(newText);
                 return true;
             }
         });
 
-        // Navigation
+        // Thiết lập điều hướng tháng
         binding.btnPrevMonth.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, -1);
-            updateMonthYearDisplay();
-            observeTransactions();
+            capNhatHienThiThangNam();
+            quanSatGiaoDich();
         });
         binding.btnNextMonth.setOnClickListener(v -> {
-            if (canNavigateToNextMonth()) {
+            if (coTheChuyenDenThangSau()) {
                 currentCalendar.add(Calendar.MONTH, 1);
-                updateMonthYearDisplay();
-                observeTransactions();
+                capNhatHienThiThangNam();
+                quanSatGiaoDich();
             }
         });
-        binding.btnCalendar.setOnClickListener(v -> showCalendarFragment());
-        binding.tvMonthYear.setOnClickListener(v -> showMonthYearPicker());
+        binding.btnCalendar.setOnClickListener(v -> hienThiFragmentLich());
+        binding.tvMonthYear.setOnClickListener(v -> hienThiDialogChonThang());
 
-        // Balance click
-        View.OnClickListener balanceClickListener = v -> showTotalBalanceFragment();
+        // Thiết lập sự kiện nhấn vào số dư
+        View.OnClickListener balanceClickListener = v -> hienThiFragmentTongSoDu();
         binding.tvExpense.setOnClickListener(balanceClickListener);
         binding.tvIncome.setOnClickListener(balanceClickListener);
         binding.tvBalance.setOnClickListener(balanceClickListener);
 
-        updateMonthYearDisplay();
-        observeTransactions();
+        capNhatHienThiThangNam();
+        quanSatGiaoDich();
     }
 
     /**
      * Tìm kiếm giao dịch theo từ khoá
+     * @param keyword Từ khoá tìm kiếm
      */
-    private void performSearch(String keyword) {
+    private void timKiem(String keyword) {
         executorService.execute(() -> {
             try {
                 int userId = myApp.getCurrentUserId();
@@ -126,22 +159,25 @@ public class HomeFragment extends Fragment {
                         .filter(t -> dateRange.isInRange(t.getDate()))
                         .collect(Collectors.toList());
 
-                updateTransactionListUI(searchResults);
+                capNhatGiaoDienDanhSachGiaoDich(searchResults);
             } catch (Exception e) {
                 Log.e(TAG, "Lỗi tìm kiếm: " + e.getMessage());
-                showError(R.string.error_search);
+                hienThiLoi(R.string.error_search);
             }
         });
     }
 
-    private void resetToOriginalList() {
-        updateTransactionListUI(new ArrayList<>(originalTransactionList));
+    /**
+     * Khôi phục về danh sách gốc khi hủy tìm kiếm
+     */
+    private void khoiPhucDanhSachGoc() {
+        capNhatGiaoDienDanhSachGiaoDich(new ArrayList<>(originalTransactionList));
     }
 
     /**
      * Quan sát và cập nhật giao dịch theo tháng/năm đang chọn
      */
-    private void observeTransactions() {
+    private void quanSatGiaoDich() {
         executorService.execute(() -> {
             try {
                 int userId = myApp.getCurrentUserId();
@@ -154,25 +190,26 @@ public class HomeFragment extends Fragment {
                         );
 
                 requireActivity().runOnUiThread(() -> {
-                    liveTransactions.observe(getViewLifecycleOwner(), this::processTransactions);
+                    liveTransactions.observe(getViewLifecycleOwner(), this::xuLyGiaoDich);
                 });
 
             } catch (Exception e) {
                 Log.e(TAG, "Lỗi quan sát giao dịch: " + e.getMessage());
-                showError(R.string.error_load_transactions);
+                hienThiLoi(R.string.error_load_transactions);
             }
         });
     }
 
     /**
      * Xử lý giao dịch lấy về và cập nhật UI
+     * @param transactions Danh sách giao dịch cần xử lý
      */
-    private void processTransactions(List<Transaction> transactions) {
+    private void xuLyGiaoDich(List<Transaction> transactions) {
         if (!isAdded() || getActivity() == null || binding == null) return;
 
         double totalExpense = 0, totalIncome = 0;
         for (Transaction t : transactions) {
-            Category c = findCategoryById(t.getCategoryId());
+            Category c = timDanhMucTheoId(t.getCategoryId());
             if (c != null) {
                 if (Constants.CATEGORY_TYPE_EXPENSE.equals(c.getType()))
                     totalExpense += Math.abs(t.getAmount());
@@ -180,9 +217,9 @@ public class HomeFragment extends Fragment {
                     totalIncome += t.getAmount();
             }
         }
-        updateMonthlyTotals(totalExpense, totalIncome);
+        capNhatTongThang(totalExpense, totalIncome);
 
-        Map<Long, DailyTransaction> dailyMap = organizeTransactionsByDay(transactions);
+        Map<Long, DailyTransaction> dailyMap = nhomGiaoDichTheoNgay(transactions);
 
         transactionAdapter.updateData(dailyMap.values(), categories);
         transactionList.clear();
@@ -193,16 +230,17 @@ public class HomeFragment extends Fragment {
 
     /**
      * Cập nhật giao diện danh sách giao dịch khi tìm kiếm/reset
+     * @param transactions Danh sách giao dịch cần hiển thị
      */
-    private void updateTransactionListUI(List<Transaction> transactions) {
+    private void capNhatGiaoDienDanhSachGiaoDich(List<Transaction> transactions) {
         if (!isAdded() || getActivity() == null || binding == null) return;
 
         requireActivity().runOnUiThread(() -> {
-            Map<Long, DailyTransaction> dailyMap = organizeTransactionsByDay(transactions);
+            Map<Long, DailyTransaction> dailyMap = nhomGiaoDichTheoNgay(transactions);
             transactionAdapter.updateData(dailyMap.values(), categories);
             double totalExpense = 0, totalIncome = 0;
             for (Transaction t : transactions) {
-                Category c = findCategoryById(t.getCategoryId());
+                Category c = timDanhMucTheoId(t.getCategoryId());
                 if (c != null) {
                     if (Constants.CATEGORY_TYPE_EXPENSE.equals(c.getType()))
                         totalExpense += Math.abs(t.getAmount());
@@ -210,14 +248,16 @@ public class HomeFragment extends Fragment {
                         totalIncome += t.getAmount();
                 }
             }
-            updateMonthlyTotals(totalExpense, totalIncome);
+            capNhatTongThang(totalExpense, totalIncome);
         });
     }
 
     /**
      * Gom nhóm giao dịch theo ngày
+     * @param transactions Danh sách giao dịch cần nhóm
+     * @return Map với key là timestamp đầu ngày và value là DailyTransaction
      */
-    private Map<Long, DailyTransaction> organizeTransactionsByDay(List<Transaction> transactions) {
+    private Map<Long, DailyTransaction> nhomGiaoDichTheoNgay(List<Transaction> transactions) {
         // Sử dụng TreeMap với Comparator đảo ngược để ngày mới nhất lên đầu
         Map<Long, DailyTransaction> dailyMap = new TreeMap<>(Collections.reverseOrder());
 
@@ -235,7 +275,12 @@ public class HomeFragment extends Fragment {
         return dailyMap;
     }
 
-    private void updateMonthlyTotals(double totalExpense, double totalIncome) {
+    /**
+     * Cập nhật tổng chi tiêu, thu nhập và số dư theo tháng
+     * @param totalExpense Tổng chi tiêu
+     * @param totalIncome Tổng thu nhập
+     */
+    private void capNhatTongThang(double totalExpense, double totalIncome) {
         if (!isAdded() || getActivity() == null || binding == null) return;
         requireActivity().runOnUiThread(() -> {
             binding.tvExpense.setText(String.format(Locale.getDefault(), "%,d", (long) totalExpense));
@@ -247,7 +292,7 @@ public class HomeFragment extends Fragment {
     /**
      * Hiển thị tháng/năm ở header và cập nhật trạng thái nút tháng trước/sau
      */
-    private void updateMonthYearDisplay() {
+    private void capNhatHienThiThangNam() {
         Calendar now = Calendar.getInstance();
         binding.tvMonthYear.setText(DateTimeUtils.formatMonthYear(currentCalendar));
         binding.tvYear.setText(String.valueOf(currentCalendar.get(Calendar.YEAR)));
@@ -272,27 +317,37 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private boolean canNavigateToNextMonth() {
+    /**
+     * Kiểm tra xem có thể chuyển sang tháng sau không
+     * @return true nếu tháng hiện tại không phải là tháng hiện tại của thiết bị
+     */
+    private boolean coTheChuyenDenThangSau() {
         Calendar now = Calendar.getInstance();
         return currentCalendar.get(Calendar.YEAR) < now.get(Calendar.YEAR) ||
                 (currentCalendar.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
                         currentCalendar.get(Calendar.MONTH) < now.get(Calendar.MONTH));
     }
 
-    private void showMonthYearPicker() {
+    /**
+     * Hiển thị dialog chọn tháng/năm
+     */
+    private void hienThiDialogChonThang() {
         MonthYearPickerDialog dialog = new MonthYearPickerDialog(
                 currentCalendar,
                 (year, month) -> {
                     currentCalendar.set(Calendar.YEAR, year);
                     currentCalendar.set(Calendar.MONTH, month);
                     currentCalendar.set(Calendar.DAY_OF_MONTH, 1);
-                    updateMonthYearDisplay();
-                    observeTransactions();
+                    capNhatHienThiThangNam();
+                    quanSatGiaoDich();
                 });
         dialog.show(getParentFragmentManager(), "MonthYearPickerDialog");
     }
 
-    private void showCalendarFragment() {
+    /**
+     * Chuyển sang fragment lịch
+     */
+    private void hienThiFragmentLich() {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_layout, new CalendarFragment())
@@ -300,7 +355,10 @@ public class HomeFragment extends Fragment {
                 .commit();
     }
 
-    private void showTotalBalanceFragment() {
+    /**
+     * Chuyển sang fragment tổng số dư
+     */
+    private void hienThiFragmentTongSoDu() {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_layout, new TotalBalanceFragment())
@@ -308,14 +366,23 @@ public class HomeFragment extends Fragment {
                 .commit();
     }
 
-    private Category findCategoryById(int categoryId) {
+    /**
+     * Tìm danh mục theo ID
+     * @param categoryId ID danh mục cần tìm
+     * @return Đối tượng Category hoặc null nếu không tìm thấy
+     */
+    private Category timDanhMucTheoId(int categoryId) {
         for (Category c : categories) {
             if (c.getCategoryId() == categoryId) return c;
         }
         return null;
     }
 
-    private void showError(int messageId) {
+    /**
+     * Hiển thị thông báo lỗi
+     * @param messageId ID của chuỗi thông báo trong resources
+     */
+    private void hienThiLoi(int messageId) {
         if (!isAdded() || getActivity() == null) return;
         requireActivity().runOnUiThread(() -> messageUtils.showError(messageId));
     }

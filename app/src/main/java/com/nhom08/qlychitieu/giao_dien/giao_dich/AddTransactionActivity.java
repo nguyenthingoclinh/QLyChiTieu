@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.nhom08.qlychitieu.mo_hinh.Category;
 import com.nhom08.qlychitieu.mo_hinh.Transaction;
 import com.nhom08.qlychitieu.tien_ich.CalculatorHandler;
 import com.nhom08.qlychitieu.tien_ich.Constants;
+import com.nhom08.qlychitieu.tien_ich.FormatUtils;
 import com.nhom08.qlychitieu.tien_ich.ImageUtils;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
 
@@ -40,6 +43,10 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Màn hình thêm giao dịch mới, cho phép người dùng nhập thông tin chi tiêu hoặc thu nhập
+ * bao gồm: số tiền, danh mục, ngày tháng, mô tả và hình ảnh biên lai.
+ */
 public class AddTransactionActivity extends AppCompatActivity {
     private static final String TAG = AddTransactionActivity.class.getSimpleName();
     private ActivityAddTransactionBinding binding;
@@ -55,6 +62,12 @@ public class AddTransactionActivity extends AppCompatActivity {
     private int userId;
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
+    // Biến để kiểm soát định dạng tiền tệ
+    private boolean isFormattingAmount = false;
+
+    /**
+     * Được gọi khi activity được tạo lần đầu
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +76,16 @@ public class AddTransactionActivity extends AppCompatActivity {
         binding = ActivityAddTransactionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initializeComponents();
-        setupViews();
-        updateDateDisplay(new Date(selectedDate));
-        loadCategories(Constants.CATEGORY_TYPE_EXPENSE); // Load default categories
+        khoiTaoCacThanhPhan();
+        thietLapGiaoDien();
+        capNhatHienThiNgay(new Date(selectedDate));
+        taiDanhMuc(Constants.CATEGORY_TYPE_EXPENSE); // Load default categories
     }
-    private void initializeComponents() {
+
+    /**
+     * Khởi tạo các thành phần cần thiết cho activity
+     */
+    private void khoiTaoCacThanhPhan() {
         MyApplication app = MyApplication.getInstance();
         database = app.getDatabase();
         userId = app.getCurrentUserId();
@@ -78,25 +95,85 @@ public class AddTransactionActivity extends AppCompatActivity {
         messageUtils = new MessageUtils(this);
         calculatorHandler = new CalculatorHandler();
 
-        // Initialize adapters and setup UI components
-        setupImagePicker();
-        setupCalculator();
-        setupDatePicker();
-        setupCategoryAdapter();
+        thietLapChonHinhAnh();
+        thietLapMayTinh();
+        thietLapChonNgay();
+        thietLapAdapterDanhMuc();
+        thietLapDinhDangTienTe();
     }
 
-    private void setupViews() {
+    /**
+     * Thiết lập định dạng tiền tệ cho số tiền hiển thị
+     */
+    private void thietLapDinhDangTienTe() {
+        // Thêm TextWatcher cho TextView hiển thị số tiền
+        binding.tvAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Không cần xử lý
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Không cần xử lý
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Tránh vòng lặp vô hạn khi định dạng
+                if (isFormattingAmount) return;
+
+                String rawAmount = s.toString().replace(",", "")
+                        .replace(".", "")
+                        .replace(" ", "")
+                        .replace("VND", "")
+                        .replace("₫", "");
+
+                // Nếu là số 0 hoặc rỗng, hiển thị là 0
+                if (rawAmount.isEmpty() || "0".equals(rawAmount)) {
+                    return;
+                }
+
+                try {
+                    // Chuyển đổi số tiền thành double
+                    double amount = Double.parseDouble(rawAmount);
+
+                    // Đánh dấu đang trong quá trình định dạng
+                    isFormattingAmount = true;
+
+                    // Định dạng số tiền và hiển thị
+                    String formattedAmount = FormatUtils.formatCurrency(AddTransactionActivity.this, amount);
+
+                    // Hiển thị số tiền đã định dạng
+                    binding.tvAmount.setText(formattedAmount);
+
+                    // Đã hoàn tất định dạng
+                    isFormattingAmount = false;
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Error formatting amount: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * Thiết lập các thành phần giao diện cơ bản
+     */
+    private void thietLapGiaoDien() {
         // Setup click listeners
         binding.btnBack.setOnClickListener(v -> finish());
-        binding.btnSave.setOnClickListener(v -> saveTransaction());
+        binding.btnSave.setOnClickListener(v -> luuGiaoDich());
     }
 
-    private void setupImagePicker() {
+    /**
+     * Thiết lập bộ chọn hình ảnh
+     */
+    private void thietLapChonHinhAnh() {
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        handleImageResult(result.getData().getData());
+                        xuLyKetQuaChonHinhAnh(result.getData().getData());
                     }
                 }
         );
@@ -108,15 +185,20 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void setupDatePicker() {
+    /**
+     * Thiết lập bộ chọn ngày
+     */
+    private void thietLapChonNgay() {
         binding.layoutDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(selectedDate > 0 ? selectedDate : System.currentTimeMillis());
+
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     this,
                     (view, year, month, dayOfMonth) -> {
                         calendar.set(year, month, dayOfMonth);
                         selectedDate = calendar.getTimeInMillis();
-                        updateDateDisplay(calendar.getTime());
+                        capNhatHienThiNgay(calendar.getTime());
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
@@ -126,13 +208,19 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void setupCalculator() {
-        setupNumberButtons();
-        setupOperatorButtons();
-        setupActionButtons();
+    /**
+     * Thiết lập bộ tính toán
+     */
+    private void thietLapMayTinh() {
+        thietLapCacNutSo();
+        thietLapCacNutPhepToan();
+        thietLapCacNutHanhDong();
     }
 
-    private void setupNumberButtons() {
+    /**
+     * Thiết lập các nút số cho máy tính
+     */
+    private void thietLapCacNutSo() {
         int[] numberButtonIds = {
                 R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
                 R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7,
@@ -142,12 +230,16 @@ public class AddTransactionActivity extends AppCompatActivity {
         for (int id : numberButtonIds) {
             binding.getRoot().findViewById(id).setOnClickListener(v -> {
                 String value = ((android.widget.Button) v).getText().toString();
-                handleNumberInput(value);
+                xuLyNhapSo(value);
             });
         }
     }
 
-    private void handleNumberInput(String value) {
+    /**
+     * Xử lý khi người dùng nhấn các nút số
+     * @param value Giá trị của nút được nhấn
+     */
+    private void xuLyNhapSo(String value) {
         switch (value) {
             case ".":
                 calculatorHandler.appendDot();
@@ -159,30 +251,43 @@ public class AddTransactionActivity extends AppCompatActivity {
                 calculatorHandler.appendNumber(value);
                 break;
         }
-        updateAmountDisplay();
+        capNhatHienThiSoTien();
     }
 
-    private void setupOperatorButtons() {
+    /**
+     * Thiết lập các nút phép toán (+, -)
+     */
+    private void thietLapCacNutPhepToan() {
         binding.btnPlus.setOnClickListener(v ->
-                handleOperator("+"));
+                xuLyPhepToan("+"));
         binding.btnMinus.setOnClickListener(v ->
-                handleOperator("-"));
+                xuLyPhepToan("-"));
     }
 
-    private void handleOperator(String operator) {
+    /**
+     * Xử lý khi người dùng nhấn các nút phép toán
+     * @param operator Phép toán được chọn (+, -)
+     */
+    private void xuLyPhepToan(String operator) {
         calculatorHandler.appendOperator(operator);
-        updateAmountDisplay();
+        capNhatHienThiSoTien();
     }
 
-    private void setupActionButtons() {
+    /**
+     * Thiết lập các nút hành động (Clear, Done)
+     */
+    private void thietLapCacNutHanhDong() {
         binding.btnClear.setOnClickListener(v -> {
             calculatorHandler.clear();
-            updateAmountDisplay();
+            capNhatHienThiSoTien();
         });
-        binding.btnDone.setOnClickListener(v -> saveTransaction());
+        binding.btnDone.setOnClickListener(v -> luuGiaoDich());
     }
 
-    private void setupCategoryAdapter() {
+    /**
+     * Thiết lập adapter cho danh sách danh mục
+     */
+    private void thietLapAdapterDanhMuc() {
         // Khởi tạo adapter với danh sách rỗng
         categoryAdapter = new CategoryAdapter(new ArrayList<>());
         binding.gridCategories.setAdapter(categoryAdapter);
@@ -192,9 +297,9 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 // Reset tất cả các input khi chuyển tab
-                resetInputs();
+                lamMoiDauVao();
                 // Load danh mục tương ứng với tab được chọn
-                loadCategories(tab.getPosition() == 0 ? "Expense" : "Income");
+                taiDanhMuc(tab.getPosition() == 0 ? "Expense" : "Income");
             }
 
             @Override
@@ -216,12 +321,39 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void updateAmountDisplay() {
-        String amount = calculatorHandler.getCurrentInput();
-        binding.tvAmount.setText(amount.isEmpty() ? "0" : amount);
+    /**
+     * Cập nhật hiển thị số tiền trên giao diện
+     * Định dạng số tiền theo định dạng tiền tệ
+     */
+    private void capNhatHienThiSoTien() {
+        String rawAmount = calculatorHandler.getCurrentInput();
+
+        if (rawAmount.isEmpty()) {
+            binding.tvAmount.setText("0");
+            return;
+        }
+
+        try {
+            // Thử chuyển đổi thành số để định dạng
+            double amount = calculatorHandler.calculate();
+
+            // Sử dụng FormatUtils để định dạng tiền tệ
+            String formattedAmount = FormatUtils.formatCurrency(this, amount);
+
+            // Hiển thị số tiền đã định dạng
+            binding.tvAmount.setText(formattedAmount);
+        } catch (NumberFormatException e) {
+            // Nếu chuỗi hiện tại không thể chuyển thành số (ví dụ: "5+"),
+            // hiển thị nguyên bản
+            binding.tvAmount.setText(rawAmount);
+        }
     }
 
-    private void handleImageResult(Uri imageUri) {
+    /**
+     * Xử lý kết quả sau khi chọn hình ảnh
+     * @param imageUri URI của hình ảnh được chọn
+     */
+    private void xuLyKetQuaChonHinhAnh(Uri imageUri) {
         if (imageUri == null) return;
 
         String savedPath = imageUtils.saveImage(imageUri);
@@ -237,7 +369,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private void updateDateDisplay(Date date) {
+    /**
+     * Cập nhật hiển thị ngày trên giao diện
+     * @param date Đối tượng Date cần hiển thị
+     */
+    private void capNhatHienThiNgay(Date date) {
         String formattedDate = new SimpleDateFormat(
                 Constants.DEFAULT_DATE_FORMAT,
                 Locale.getDefault()
@@ -245,12 +381,16 @@ public class AddTransactionActivity extends AppCompatActivity {
         binding.tvDate.setText(formattedDate);
     }
 
-    private void loadCategories(String type) {
+    /**
+     * Tải danh sách danh mục từ cơ sở dữ liệu
+     * @param type Loại danh mục (Chi tiêu hoặc Thu nhập)
+     */
+    private void taiDanhMuc(String type) {
         executorService.execute(() -> {
             try {
                 List<Category> categories = database.categoryDao()
                         .getCategoriesByType(userId, type);
-                runOnUiThread(() -> updateCategoryList(categories));
+                runOnUiThread(() -> capNhatDanhSachDanhMuc(categories));
             } catch (Exception e) {
                 Log.e(TAG, "Error loading categories: " + e.getMessage());
                 runOnUiThread(() ->
@@ -259,7 +399,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void updateCategoryList(List<Category> categories) {
+    /**
+     * Cập nhật danh sách danh mục trên giao diện
+     * @param categories Danh sách danh mục cần hiển thị
+     */
+    private void capNhatDanhSachDanhMuc(List<Category> categories) {
         if (categoryAdapter == null) return;
 
         categoryAdapter.updateCategories(categories != null ? categories : new ArrayList<>());
@@ -274,9 +418,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private void saveTransaction(){
-
-        if (!validateInputs()) return;
+    /**
+     * Lưu thông tin giao dịch mới
+     */
+    private void luuGiaoDich(){
+        if (!kiemTraDauVao()) return;
 
         try {
             double amount = calculatorHandler.calculate();
@@ -291,21 +437,25 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             final Transaction transaction = new Transaction(
                     userId,
-                    selectedCategory.getCategoryId(),// accountId
+                    selectedCategory.getCategoryId(),
                     amount,
                     selectedDate != 0 ? selectedDate : System.currentTimeMillis(),
                     binding.etDescription.getText().toString().trim(),
                     imagePath
             );
 
-            saveTransactionToDb(transaction);
+            luuGiaoDichVaoDatabase(transaction);
 
         } catch (NumberFormatException e) {
             messageUtils.showError(R.string.error_invalid_amount);
         }
     }
 
-    private boolean validateInputs() {
+    /**
+     * Kiểm tra tính hợp lệ của dữ liệu đầu vào
+     * @return true nếu dữ liệu hợp lệ, false nếu không
+     */
+    private boolean kiemTraDauVao() {
         if (selectedCategory == null) {
             messageUtils.showError(R.string.error_no_category);
             return false;
@@ -319,7 +469,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveTransactionToDb(Transaction transaction) {
+    /**
+     * Lưu giao dịch vào cơ sở dữ liệu
+     * @param transaction Đối tượng giao dịch cần lưu
+     */
+    private void luuGiaoDichVaoDatabase(Transaction transaction) {
         executorService.execute(() -> {
             try {
                 database.transactionDao().insertTransaction(transaction);
@@ -335,13 +489,17 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void resetInputs() {
+    /**
+     * Làm mới tất cả các trường nhập liệu
+     */
+    private void lamMoiDauVao() {
         binding.etDescription.setText("");
         calculatorHandler.clear();
-        updateAmountDisplay();
+        capNhatHienThiSoTien();
         selectedCategory = null;
         categoryAdapter.setSelectedCategory(null);
-        selectedDate = 0;
+        selectedDate = System.currentTimeMillis(); // Đặt ngày về ngày hiện tại thay vì 0
+        capNhatHienThiNgay(new Date(selectedDate)); // Cập nhật hiển thị ngày
         imagePath = "";
         binding.ivReceipt.setVisibility(View.GONE);
         binding.tvAttachPhoto.setText(R.string.attach_photo);
@@ -349,13 +507,19 @@ public class AddTransactionActivity extends AppCompatActivity {
         binding.tvIconAddPhoto.setText(R.string.icon_add_a_photo);
     }
 
+    /**
+     * Được gọi khi activity bị hủy
+     * Đảm bảo giải phóng tài nguyên liên quan đến view binding
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
     }
 
-    // CategoryAdapter inner class
+    /**
+     * Adapter hiển thị danh sách danh mục trong lưới
+     */
     private class CategoryAdapter extends BaseAdapter {
         private List<Category> categories;
         private Category selectedCategory;

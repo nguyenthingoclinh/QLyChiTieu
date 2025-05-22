@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Locale;
@@ -123,5 +125,47 @@ public class FormatUtils {
             // Fallback formatting if there's any error
             return String.format("%,.2f %s", amount, currencyCode);
         }
+    }
+
+    /**
+     * Định dạng số tiền theo định dạng tiền tệ Việt Nam
+     * @param amount Số tiền cần định dạng
+     * @return Chuỗi đã định dạng, ví dụ: "1.000.000"
+     */
+    public static String formatCurrency(long amount) {
+        // Sử dụng NumberFormat để định dạng tiền tệ theo locale Việt Nam
+        NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return nf.format(amount);
+    }
+
+    /**
+     * Định dạng ngày giờ với định dạng ngày/tháng/năm giờ:phút
+     * @param timestamp Thời gian dưới dạng timestamp (milliseconds)
+     * @return Chuỗi ngày giờ đã định dạng
+     */
+    public static String formatDateTime(long timestamp) {
+        return Instant.ofEpochMilli(timestamp)
+                .atZone(ZoneId.systemDefault())
+                .format(DateTimeUtils.TRANSACTION_DATE_FORMATTER);
+    }
+
+    /**
+     * Định dạng số thực với số chữ số thập phân xác định
+     * @param value Giá trị số thực cần định dạng
+     * @param decimalPlaces Số chữ số thập phân
+     * @return Chuỗi số thực đã định dạng
+     */
+    public static String formatDouble(double value, int decimalPlaces) {
+        return String.format(Locale.getDefault(), "%." + decimalPlaces + "f", value);
+    }
+
+    /**
+     * Định dạng phần trăm
+     * @param value Giá trị cần hiển thị dưới dạng phần trăm (0-1)
+     * @param decimalPlaces Số chữ số thập phân
+     * @return Chuỗi phần trăm đã định dạng, ví dụ: "75,5%"
+     */
+    public static String formatPercent(double value, int decimalPlaces) {
+        return String.format(Locale.getDefault(), "%." + decimalPlaces + "f%%", value * 100);
     }
 }

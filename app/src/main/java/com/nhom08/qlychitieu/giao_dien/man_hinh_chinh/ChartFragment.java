@@ -69,18 +69,21 @@ public class ChartFragment extends Fragment {
     private List<Transaction> transactions = new ArrayList<>();
     private List<ChartCategoryInfo> chartCategoryInfos = new ArrayList<>();
 
+    /**
+     * Tạo và trả về view cho fragment
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentChartBinding.inflate(inflater, container, false);
-        init();
-        setupViews();
+        khoiTao();
+        thietLapGiaoDien();
         return binding.getRoot();
     }
 
     /**
      * Khởi tạo các thành phần cần thiết cho Fragment
      */
-    private void init() {
+    private void khoiTao() {
         myApp = (MyApplication) requireActivity().getApplication();
         database = myApp.getDatabase();
         executorService = myApp.getExecutorService();
@@ -105,7 +108,7 @@ public class ChartFragment extends Fragment {
                     PieEntry pe = (PieEntry) e;
 
                     // Lấy phần trăm của miếng được chọn
-                    float percentage = pe.getValue() / getTotalValue() * 100;
+                    float percentage = pe.getValue() / tinhTongGiaTri() * 100;
 
                     // Hiển thị tên danh mục và phần trăm
                     String message = String.format(Locale.getDefault(), "%s: %.1f%%", pe.getLabel(), percentage);
@@ -127,7 +130,7 @@ public class ChartFragment extends Fragment {
     /**
      * Thiết lập các thành phần giao diện và xử lý sự kiện
      */
-    private void setupViews() {
+    private void thietLapGiaoDien() {
         // Setup RecyclerView hiển thị danh sách các danh mục
         binding.recyclerViewCategories.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.recyclerViewCategories.setAdapter(categoryAdapter);
@@ -137,8 +140,8 @@ public class ChartFragment extends Fragment {
             @Override
             public void onTabSelected(com.google.android.material.tabs.TabLayout.Tab tab) {
                 isExpenseTab = tab.getPosition() == 0; // Tab 0 là chi tiêu, tab 1 là thu nhập
-                updateChartTitle(); // Cập nhật tiêu đề biểu đồ
-                processTransactions(); // Xử lý lại dữ liệu để hiển thị
+                capNhatTieuDeBieuDo(); // Cập nhật tiêu đề biểu đồ
+                xuLyDuLieuGiaoDich(); // Xử lý lại dữ liệu để hiển thị
             }
 
             @Override
@@ -149,41 +152,41 @@ public class ChartFragment extends Fragment {
         });
 
         // Setup RadioGroup để chọn loại biểu đồ
-        setupChartTypeSelection();
+        thietLapChonLoaiBieuDo();
 
         // Xử lý sự kiện điều hướng tháng trước/tháng sau
         binding.btnPrevMonth.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, -1); // Lùi 1 tháng
-            updateMonthYearDisplay(); // Cập nhật hiển thị tháng/năm
-            observeTransactions(); // Tải lại dữ liệu giao dịch
+            capNhatHienThiThangNam(); // Cập nhật hiển thị tháng/năm
+            quanSatGiaoDich(); // Tải lại dữ liệu giao dịch
         });
         binding.btnNextMonth.setOnClickListener(v -> {
-            if (canNavigateToNextMonth()) { // Kiểm tra xem có thể tiến tới tháng sau không
+            if (coTheChuyenDenThangSau()) { // Kiểm tra xem có thể tiến tới tháng sau không
                 currentCalendar.add(Calendar.MONTH, 1); // Tiến 1 tháng
-                updateMonthYearDisplay(); // Cập nhật hiển thị tháng/năm
-                observeTransactions(); // Tải lại dữ liệu giao dịch
+                capNhatHienThiThangNam(); // Cập nhật hiển thị tháng/năm
+                quanSatGiaoDich(); // Tải lại dữ liệu giao dịch
             }
         });
-        binding.tvMonthYear.setOnClickListener(v -> showMonthYearPicker()); // Hiển thị dialog chọn tháng/năm
+        binding.tvMonthYear.setOnClickListener(v -> hienThiBoPicker()); // Hiển thị dialog chọn tháng/năm
 
-        updateMonthYearDisplay(); // Cập nhật hiển thị tháng/năm ban đầu
-        observeTransactions(); // Tải dữ liệu giao dịch ban đầu
+        capNhatHienThiThangNam(); // Cập nhật hiển thị tháng/năm ban đầu
+        quanSatGiaoDich(); // Tải dữ liệu giao dịch ban đầu
     }
 
     /**
      * Thiết lập xử lý sự kiện cho RadioGroup chuyển đổi loại biểu đồ
      */
-    private void setupChartTypeSelection() {
+    private void thietLapChonLoaiBieuDo() {
         binding.chartTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioPieChart) {
                 currentChartType = 0;
-                switchToChart(0);
+                chuyenDoiBieuDo(0);
             } else if (checkedId == R.id.radioBarChart) {
                 currentChartType = 1;
-                switchToChart(1);
+                chuyenDoiBieuDo(1);
             } else if (checkedId == R.id.radioLineChart) {
                 currentChartType = 2;
-                switchToChart(2);
+                chuyenDoiBieuDo(2);
             }
         });
     }
@@ -191,15 +194,15 @@ public class ChartFragment extends Fragment {
     /**
      * Hiển thị dialog chọn tháng/năm
      */
-    private void showMonthYearPicker() {
+    private void hienThiBoPicker() {
         MonthYearPickerDialog dialog = new MonthYearPickerDialog(
                 currentCalendar,
                 (year, month) -> {
                     currentCalendar.set(Calendar.YEAR, year);
                     currentCalendar.set(Calendar.MONTH, month);
                     currentCalendar.set(Calendar.DAY_OF_MONTH, 1);
-                    updateMonthYearDisplay();
-                    observeTransactions();
+                    capNhatHienThiThangNam();
+                    quanSatGiaoDich();
                 });
         dialog.show(getParentFragmentManager(), "MonthYearPickerDialog");
     }
@@ -207,7 +210,7 @@ public class ChartFragment extends Fragment {
     /**
      * Cập nhật hiển thị tháng/năm và trạng thái các nút điều hướng
      */
-    private void updateMonthYearDisplay() {
+    private void capNhatHienThiThangNam() {
         Calendar now = Calendar.getInstance();
         binding.tvMonthYear.setText(DateTimeUtils.formatMonthYear(currentCalendar));
 
@@ -234,7 +237,7 @@ public class ChartFragment extends Fragment {
     /**
      * Kiểm tra xem có thể điều hướng tới tháng tiếp theo hay không
      */
-    private boolean canNavigateToNextMonth() {
+    private boolean coTheChuyenDenThangSau() {
         Calendar now = Calendar.getInstance();
         return currentCalendar.get(Calendar.YEAR) < now.get(Calendar.YEAR) ||
                 (currentCalendar.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
@@ -244,7 +247,7 @@ public class ChartFragment extends Fragment {
     /**
      * Cập nhật tiêu đề biểu đồ dựa trên tab đang chọn
      */
-    private void updateChartTitle() {
+    private void capNhatTieuDeBieuDo() {
         String title;
         switch (currentChartType) {
             case 0:
@@ -265,24 +268,24 @@ public class ChartFragment extends Fragment {
     /**
      * Chuyển đổi hiển thị giữa các loại biểu đồ
      */
-    private void switchToChart(int chartType) {
+    private void chuyenDoiBieuDo(int chartType) {
         switch (chartType) {
             case 0: // Biểu đồ tròn
                 chartManager.showPieChart();
-                updateChartTitle();
-                updatePieChart();
+                capNhatTieuDeBieuDo();
+                capNhatBieuDoTron();
                 break;
 
             case 1: // Biểu đồ cột
                 chartManager.showBarChart();
-                updateChartTitle();
-                updateBarChart();
+                capNhatTieuDeBieuDo();
+                capNhatBieuDoCot();
                 break;
 
             case 2: // Biểu đồ đường
                 chartManager.showLineChart();
-                updateChartTitle();
-                loadMonthlyTrendData();
+                capNhatTieuDeBieuDo();
+                taiDuLieuXuHuong();
                 break;
         }
     }
@@ -290,7 +293,7 @@ public class ChartFragment extends Fragment {
     /**
      * Quan sát dữ liệu giao dịch từ database
      */
-    private void observeTransactions() {
+    private void quanSatGiaoDich() {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.tvNoData.setVisibility(View.GONE);
 
@@ -314,7 +317,7 @@ public class ChartFragment extends Fragment {
                     // Quan sát LiveData để cập nhật khi dữ liệu thay đổi
                     liveTransactions.observe(getViewLifecycleOwner(), transactions -> {
                         this.transactions = transactions;
-                        processTransactions();
+                        xuLyDuLieuGiaoDich();
                         binding.progressBar.setVisibility(View.GONE);
                     });
                 });
@@ -332,7 +335,7 @@ public class ChartFragment extends Fragment {
     /**
      * Xử lý dữ liệu giao dịch để hiển thị thống kê
      */
-    private void processTransactions() {
+    private void xuLyDuLieuGiaoDich() {
         if (!isAdded() || getActivity() == null) return;
 
         // Lọc giao dịch theo loại (chi tiêu hoặc thu nhập)
@@ -357,7 +360,7 @@ public class ChartFragment extends Fragment {
         // Tính tổng số tiền cho mỗi phân loại
         double total = 0;
         for (Transaction transaction : transactions) {
-            Category category = findCategoryById(transaction.getCategoryId());
+            Category category = timDanhMucTheoId(transaction.getCategoryId());
             if (category != null && targetType.equals(category.getType())) {
                 ChartCategoryInfo info = categoryInfoMap.get(category.getCategoryId());
                 if (info != null) {
@@ -392,14 +395,14 @@ public class ChartFragment extends Fragment {
             binding.lineChart.setVisibility(View.GONE);
         } else {
             binding.tvNoData.setVisibility(View.GONE);
-            switchToChart(currentChartType);
+            chuyenDoiBieuDo(currentChartType);
         }
     }
 
     /**
      * Cập nhật biểu đồ tròn
      */
-    private void updatePieChart() {
+    private void capNhatBieuDoTron() {
         if (chartCategoryInfos.isEmpty()) {
             binding.tvNoData.setVisibility(View.VISIBLE);
             binding.pieChart.setVisibility(View.GONE);
@@ -415,7 +418,7 @@ public class ChartFragment extends Fragment {
     /**
      * Cập nhật biểu đồ cột
      */
-    private void updateBarChart() {
+    private void capNhatBieuDoCot() {
         if (transactions.isEmpty()) {
             binding.tvNoData.setVisibility(View.VISIBLE);
             binding.barChart.setVisibility(View.GONE);
@@ -427,7 +430,7 @@ public class ChartFragment extends Fragment {
                     currentCalendar,
                     transactions,
                     isExpenseTab,
-                    this::findCategoryById,
+                    this::timDanhMucTheoId,
                     Constants.CATEGORY_TYPE_EXPENSE,
                     Constants.CATEGORY_TYPE_INCOME
             );
@@ -437,7 +440,7 @@ public class ChartFragment extends Fragment {
     /**
      * Tải dữ liệu xu hướng cho biểu đồ đường
      */
-    private void loadMonthlyTrendData() {
+    private void taiDuLieuXuHuong() {
         binding.progressBar.setVisibility(View.VISIBLE);
 
         executorService.execute(() -> {
@@ -485,7 +488,7 @@ public class ChartFragment extends Fragment {
                     transactionDate.setTimeInMillis(transaction.getDate());
                     String monthYear = DateTimeUtils.formatMonthYearShort(transactionDate);
 
-                    Category category = findCategoryById(transaction.getCategoryId());
+                    Category category = timDanhMucTheoId(transaction.getCategoryId());
                     if (category != null) {
                         float amount = (float) Math.abs(transaction.getAmount());
                         if (Constants.CATEGORY_TYPE_EXPENSE.equals(category.getType())) {
@@ -523,7 +526,7 @@ public class ChartFragment extends Fragment {
     /**
      * Hàm trợ giúp để tính tổng giá trị của tất cả các miếng trong biểu đồ
      */
-    private float getTotalValue() {
+    private float tinhTongGiaTri() {
         float total = 0f;
         for (ChartCategoryInfo info : chartCategoryInfos) {
             total += (float) info.getAmount();
@@ -534,7 +537,7 @@ public class ChartFragment extends Fragment {
     /**
      * Tìm phân loại theo ID
      */
-    private Category findCategoryById(Integer categoryId) {
+    private Category timDanhMucTheoId(Integer categoryId) {
         if (categoryId == null) return null;
         return allCategories.stream()
                 .filter(c -> c.getCategoryId() == categoryId)
