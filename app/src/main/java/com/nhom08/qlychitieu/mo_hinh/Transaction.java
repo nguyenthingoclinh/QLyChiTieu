@@ -2,6 +2,7 @@ package com.nhom08.qlychitieu.mo_hinh;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -24,6 +25,10 @@ public class Transaction {
         private String description;
         private String imagePath;
 
+        public Transaction() {
+        }
+
+        @Ignore
         public Transaction(int userId, Integer categoryId, double amount, long date, String description, String imagePath) {
                 this.userId = userId;
                 this.categoryId = categoryId;

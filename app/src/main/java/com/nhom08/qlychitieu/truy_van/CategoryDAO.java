@@ -11,16 +11,19 @@ import java.util.List;
 @Dao
 public interface CategoryDAO {
     @Insert
-    void insertCategory(Category category);
+    long insertCategory(Category category);
     @Insert
     void insertCategories(List<Category> categories);
     @Update
     void updateCategory(Category category);
     @Delete
     void deleteCategory(Category category);
+    @Query("DELETE FROM categories WHERE userId = :userId")
+    void deleteAllByUserId(int userId);
     @Query("SELECT * FROM categories WHERE userId = :userId")
     List<Category> getAllCategories(int userId);
-
     @Query("SELECT * FROM categories WHERE userId = :userId AND type = :type")
     List<Category> getCategoriesByType(int userId, String type);
+    @Query("SELECT * FROM categories WHERE userId = :userId")
+    List<Category> getCategoryByUserId(int userId);
 }

@@ -2,11 +2,14 @@ package com.nhom08.qlychitieu;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.util.Log;
+
 import androidx.room.Room;
 import com.nhom08.qlychitieu.csdl.AppDatabase;
 import com.nhom08.qlychitieu.mo_hinh.User;
 import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.tien_ich.FormatUtils;
+import com.nhom08.qlychitieu.tien_ich.NotificationHelper;
 import com.nhom08.qlychitieu.tien_ich.ThemeUtils;
 
 import java.util.concurrent.ExecutorService;
@@ -50,6 +53,29 @@ public class MyApplication extends Application {
 
         // Khôi phục phiên đăng nhập
         restoreUserSession();
+
+        // Thiết lập thông báo nhắc nhở hàng ngày nếu người dùng đã đăng nhập
+        setupDailyNotification();
+    }
+
+    /**
+     * Thiết lập thông báo nhắc nhở hàng ngày
+     */
+    private void setupDailyNotification() {
+        try {
+            // Kiểm tra xem người dùng đã đăng nhập chưa
+            boolean isLoggedIn = sharedPreferences.getBoolean(Constants.KEY_IS_LOGGED_IN, false);
+            if (isLoggedIn) {
+                // Kiểm tra xem thông báo có được bật không
+                boolean notificationsEnabled = sharedPreferences.getBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, true);
+                if (notificationsEnabled) {
+                    NotificationHelper.scheduleDailyReminder(this);
+                }
+            }
+        } catch (Exception e) {
+            // Log lỗi nhưng không để crash ứng dụng
+            Log.e("MyApplication", "Lỗi khi thiết lập thông báo: " + e.getMessage());
+        }
     }
 
     /**
@@ -112,6 +138,13 @@ public class MyApplication extends Application {
             editor.clear();
         }
         editor.apply();
+
+        // Cập nhật thông báo sau khi đăng nhập/đăng xuất
+        if (user != null) {
+            setupDailyNotification();
+        } else {
+            NotificationHelper.cancelDailyReminder(this);
+        }
     }
 
     public int getCurrentUserId() {
