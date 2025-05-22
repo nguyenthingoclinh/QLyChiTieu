@@ -15,6 +15,8 @@ import com.nhom08.qlychitieu.databinding.FragmentPersonBinding;
 import com.nhom08.qlychitieu.giao_dien.SettingActivity;
 import com.nhom08.qlychitieu.giao_dien.danh_muc.CategoryActivity;
 import com.nhom08.qlychitieu.giao_dien.nguoi_dung.LogInActivity;
+import com.nhom08.qlychitieu.giao_dien.thong_bao.NotificationSettingsActivity;
+import com.nhom08.qlychitieu.giao_dien.ExportImportActivity;
 import com.nhom08.qlychitieu.mo_hinh.User;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
 
@@ -50,11 +52,10 @@ public class PersonFragment extends Fragment {
     }
 
     private void setupViews() {
-        // Menu items click listeners
         binding.menuCategorySetting.setOnClickListener(v -> openCategorySettings());
         binding.menuSetting.setOnClickListener(v -> openSettings());
-        binding.menuExport.setOnClickListener(v ->
-                showFeatureInDevelopment(R.string.feature_export));
+        binding.menuAlert.setOnClickListener(v -> openAlert());
+        binding.menuExport.setOnClickListener(v -> openExportImport());
         binding.menuLogout.setOnClickListener(v -> handleLogout());
     }
 
@@ -75,9 +76,12 @@ public class PersonFragment extends Fragment {
     private void openSettings() {
         startActivity(new Intent(requireContext(), SettingActivity.class));
     }
+    private void openAlert() {
+        startActivity(new Intent(requireContext(), NotificationSettingsActivity.class));
+    }
 
-    private void showFeatureInDevelopment(int messageResId) {
-        messageUtils.showInfo(messageResId);
+    private void openExportImport() {
+        startActivity(new Intent(requireContext(), ExportImportActivity.class));
     }
 
     private void handleLogout() {

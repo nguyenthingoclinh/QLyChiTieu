@@ -1,9 +1,11 @@
 package com.nhom08.qlychitieu.truy_van;
+
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-import androidx.room.Delete;
 
 import com.nhom08.qlychitieu.mo_hinh.SpendingAlert;
 
@@ -11,33 +13,30 @@ import java.util.List;
 
 @Dao
 public interface SpendingAlertDAO {
+
     @Insert
-    long insertAlert(SpendingAlert alert);
+    long insert(SpendingAlert alert);
 
     @Update
-    void updateAlert(SpendingAlert alert);
+    void update(SpendingAlert alert);
 
     @Delete
-    void deleteAlert(SpendingAlert alert);
-
-    @Query("SELECT * FROM spending_alerts WHERE userId = :userId ORDER BY priority DESC, alertType ASC")
-    List<SpendingAlert> getAlertsByUser(int userId);
-
-    @Query("SELECT * FROM spending_alerts WHERE userId = :userId AND active = 1 ORDER BY priority DESC")
-    List<SpendingAlert> getActiveAlerts(int userId);
-
-    @Query("SELECT * FROM spending_alerts WHERE userId = :userId AND alertType = :alertType")
-    List<SpendingAlert> getAlertsByType(int userId, String alertType);
+    void delete(SpendingAlert alert);
+    @Query("DELETE FROM spending_alerts WHERE userId = :userId")
+    void deleteAllByUserId(int userId);
 
     @Query("SELECT * FROM spending_alerts WHERE alertId = :alertId")
-    SpendingAlert getAlertById(int alertId);
+    SpendingAlert getById(int alertId);
 
-    @Query("UPDATE spending_alerts SET active = :isActive WHERE alertId = :alertId")
-    void toggleAlertActive(int alertId, boolean isActive);
+    @Query("SELECT * FROM spending_alerts WHERE userId = :userId ORDER BY alertType, title")
+    List<SpendingAlert> getByUserId(int userId);
 
-    @Query("UPDATE spending_alerts SET lastNotified = :timestamp WHERE alertId = :alertId")
-    void updateLastNotified(int alertId, long timestamp);
+    @Query("SELECT * FROM spending_alerts WHERE userId = :userId AND active = 1 ORDER BY alertType, title")
+    List<SpendingAlert> getActiveAlertsByUserId(int userId);
 
-    @Query("SELECT COUNT(*) FROM spending_alerts WHERE userId = :userId")
-    int getAlertCount(int userId);
+    @Query("SELECT * FROM spending_alerts WHERE userId = :userId AND alertType = :alertType")
+    List<SpendingAlert> getByUserIdAndType(int userId, String alertType);
+
+    @Query("UPDATE spending_alerts SET active = :active WHERE alertId = :alertId")
+    void updateActiveStatus(int alertId, boolean active);
 }

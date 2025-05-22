@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtils.applyTheme(this);
-        // Khởi tạo channel thông báo
-        NotificationHelper.createNotificationChannel(this);
+
         EdgeToEdge.enable(this);
         messageUtils = new MessageUtils(this);
 
