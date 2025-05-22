@@ -84,6 +84,7 @@
 
         <!-- Card Hồ sơ đè lên giữa phần vàng và trắng -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardUserProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

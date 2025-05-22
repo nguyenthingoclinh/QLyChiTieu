@@ -35,4 +35,6 @@
     <string name="date_format">%d/%d/%d</string>
 
     <string name="no_data">Không có dữ liệu</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,6 +1,9 @@
 package com.nhom08.qlychitieu.csdl;
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.room.Database;
+import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -146,4 +149,16 @@ public abstract class AppDatabase extends RoomDatabase {
             database.execSQL("DROP TABLE IF EXISTS settings");
         }
     };
+    private static AppDatabase INSTANCE;
+
+    public static AppDatabase getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                            AppDatabase.class, "your_database_name")
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3) // nếu cần
+                    .fallbackToDestructiveMigration() // xóa database nếu không migrate được
+                    .build();
+        }
+        return INSTANCE;
+    }
 }

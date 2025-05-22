@@ -32,4 +32,11 @@ public interface UserDAO {
 
     @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
     User getUserByEmailAndPassword(String email, String password);
+
+    @Query("UPDATE users SET fullName = :name WHERE email = :email")
+    void updateUserName(String email, String name);
+
+    @Query("UPDATE users SET email = :newEmail WHERE email = :oldEmail")
+    void updateUserEmail(String oldEmail, String newEmail);
+
 }
