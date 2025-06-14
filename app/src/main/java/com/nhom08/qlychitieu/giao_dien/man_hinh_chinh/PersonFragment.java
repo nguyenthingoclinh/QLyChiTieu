@@ -1,6 +1,7 @@
 package com.nhom08.qlychitieu.giao_dien.man_hinh_chinh;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,13 @@ import com.nhom08.qlychitieu.databinding.FragmentPersonBinding;
 import com.nhom08.qlychitieu.giao_dien.SettingActivity;
 import com.nhom08.qlychitieu.giao_dien.danh_muc.CategoryActivity;
 import com.nhom08.qlychitieu.giao_dien.nguoi_dung.LogInActivity;
+import com.nhom08.qlychitieu.giao_dien.nguoi_dung.UserProfileFragment;
 import com.nhom08.qlychitieu.giao_dien.thong_bao.NotificationSettingsActivity;
 import com.nhom08.qlychitieu.giao_dien.ExportImportActivity;
 import com.nhom08.qlychitieu.mo_hinh.User;
 import com.nhom08.qlychitieu.tien_ich.MessageUtils;
+
+import java.io.File;
 
 /**
  * Fragment quản lý thông tin cá nhân và cài đặt
@@ -77,6 +81,7 @@ public class PersonFragment extends Fragment {
      * Mỗi menu item sẽ mở một activity tương ứng khi được nhấn
      */
     private void thietLapThanhPhanGiaoDien() {
+        binding.cardUserProfile.setOnClickListener(v -> openUserProfile());
         // Thiết lập sự kiện click cho menu quản lý danh mục
         binding.menuCategorySetting.setOnClickListener(v -> moQuanLyDanhMuc());
 
@@ -93,6 +98,14 @@ public class PersonFragment extends Fragment {
         binding.menuLogout.setOnClickListener(v -> xuLyDangXuat());
     }
 
+    private void openUserProfile() {
+        Fragment userProfileFragment = new UserProfileFragment();
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_layout, userProfileFragment)
+                .addToBackStack(null)
+                .commit();
+    }
     /**
      * Cập nhật thông tin người dùng hiện tại lên giao diện
      * Nếu không có người dùng đăng nhập, chuyển hướng đến màn hình đăng nhập
@@ -100,11 +113,22 @@ public class PersonFragment extends Fragment {
     private void capNhatThongTinNguoiDung() {
         User currentUser = app.getCurrentUser();
         if (currentUser != null) {
-            // Hiển thị tên và email của người dùng
             binding.tvUsername.setText(currentUser.getFullName());
             binding.tvUserEmail.setText(currentUser.getEmail());
+            String avatarPath = currentUser.getAvatarPath();
+            if (avatarPath != null && !avatarPath.isEmpty()) {
+                File avatarFile = new File(avatarPath);
+                if (avatarFile.exists()) {
+                    binding.imgAvatar.setImageURI(Uri.fromFile(avatarFile));
+                } else {
+                    binding.imgAvatar.setImageResource(R.drawable.ic_avatar_default);
+                }
+            } else {
+                binding.imgAvatar.setImageResource(R.drawable.ic_avatar_default);
+            }
+
         } else {
-            // Nếu không có người dùng, chuyển hướng đến màn hình đăng nhập
+
             chuyenDenDangNhap();
         }
     }
@@ -173,6 +197,11 @@ public class PersonFragment extends Fragment {
         requireActivity().finish();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        capNhatThongTinNguoiDung();
+    }
     /**
      * Được gọi khi view bị hủy
      * Giải phóng tài nguyên binding để tránh rò rỉ bộ nhớ

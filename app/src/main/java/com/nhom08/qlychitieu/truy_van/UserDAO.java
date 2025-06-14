@@ -39,4 +39,6 @@ public interface UserDAO {
     @Query("UPDATE users SET email = :newEmail WHERE email = :oldEmail")
     void updateUserEmail(String oldEmail, String newEmail);
 
+    @Query("UPDATE users SET avatarPath = :avatarPath WHERE userId = :userId")
+    void updateUserAvatar(int userId, String avatarPath);
 }

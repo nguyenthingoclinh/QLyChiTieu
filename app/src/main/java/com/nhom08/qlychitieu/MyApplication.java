@@ -11,6 +11,7 @@ import com.nhom08.qlychitieu.tien_ich.Constants;
 import com.nhom08.qlychitieu.tien_ich.FormatUtils;
 import com.nhom08.qlychitieu.tien_ich.NotificationHelper;
 import com.nhom08.qlychitieu.tien_ich.ThemeUtils;
+import com.nhom08.qlychitieu.truy_van.UserDAO;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -116,6 +117,9 @@ public class MyApplication extends Application {
 
     public AppDatabase getDatabase() {
         return database;
+    }
+    public UserDAO getUserDAO() {
+        return database.userDao();
     }
 
     public ExecutorService getExecutorService() {
